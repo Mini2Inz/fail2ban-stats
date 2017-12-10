@@ -1,5 +1,5 @@
 # fail2ban-stats
 
-fail2ban-ng Analitycal and Raporting Server
+Fail2ban-ng Analitycal and Reporting Server
 
 
