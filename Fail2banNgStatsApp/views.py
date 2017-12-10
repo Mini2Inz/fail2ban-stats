@@ -14,12 +14,6 @@ def index(request):
     return render(request, 'index.html')
 
 
-def chart():
-    labels = ["January","February","March","April","May","June","July","August"]
-    values = [10,9,8,7,6,4,7,8]
-    return render_template('chart.html', values=values, labels=labels)
-
-
 class LineChartJSONView(BaseLineChartView):
     def get_labels(self):
         return ["Niedziela", "Poniedziałek", "Wtorek", "Środa"]
