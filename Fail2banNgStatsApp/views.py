@@ -8,6 +8,10 @@ from random import randint
 from django.views.generic import TemplateView
 from django import http
 from chartjs.views.lines import BaseLineChartView
+from django.views.generic import TemplateView
+from django.contrib.auth.models import User
+
+import arrow
 
 
 def index(request):
@@ -29,6 +33,11 @@ class LineChartJSONView(BaseLineChartView):
 
 line_chart = TemplateView.as_view(template_name='line_chart.html')
 line_chart_json = LineChartJSONView.as_view()
+
+
+
+
+
 
 
 
