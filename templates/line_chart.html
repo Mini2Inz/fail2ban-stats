@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 <script type="text/javascript" src="{% static 'js/jQuery.js' %}"></script>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
 {#<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>#}
@@ -6,44 +6,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 
-x
 <html>
 <head>
-    <style>
-        header, footer {
-            padding: 1em;
-            color: white;
-            background-color: black;
-            clear: left;
-            text-align: center;
-        }
-
-        linechart {
-            float: left;
-            max-width: 500px;
-            margin: 0;
-            padding: 1em;
-        }
-
-        piechart {
-            float: left;
-            max-width: 500px;
-            margin: 0;
-            padding: 1em;
-        }
-
-        polarchart {
-            float: right;
-            max-width: 500px;
-            margin: 0;
-            padding: 1em;
-        }
-
-    </style>
     <title>Fail2ban-ng Stats</title>
     <!--[if lte IE 8]>
             <script src="{% static 'js/excanvas.js' %}"></script>
         <![endif]-->
+    <link rel="stylesheet" href="{% static 'css/chart_styles.css' %}">
 </head>
 <body>
 <div class="container">
@@ -63,28 +32,30 @@ x
         </script>
     </linechart>
 
-    <piechart>
-        </canvas>
-        <canvas id="pie_chart"></canvas>
-        <script type="text/javascript">
-            var ctx = document.getElementById("pie_chart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ["Korea Północna", "Chiny", "Ukraina"],
-                    datasets: [{
-                        backgroundColor: [
-                            "#2ecc71",
-                            "#3498db",
-                            "#95a5a6"
-                        ],
-                        data: [12, 9, 3]
-                    }]
-                }
-            });
+    <polaroid>
+        <piechart>
+            </canvas>
+            <canvas id="pie_chart"></canvas>
+            <script type="text/javascript">
+                var ctx = document.getElementById("pie_chart").getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ["Korea Północna", "Chiny", "Ukraina"],
+                        datasets: [{
+                            backgroundColor: [
+                                "#2ecc71",
+                                "#3498db",
+                                "#95a5a6"
+                            ],
+                            data: [12, 9, 3]
+                        }]
+                    }
+                });
 
-        </script>
-    </piechart>
+            </script>
+        </piechart>
+    </polaroid>
 
     <polarchart>
         </canvas>
@@ -104,7 +75,7 @@ x
                         label: 'wtorek',
                         backgroundColor: "rgba(255,47,30,0.4)",
                         borderColor: "rgba(255,153,0,1)",
-                        data: [12,9,3]
+                        data: [12, 9, 3]
                     }]
                 }
             });
