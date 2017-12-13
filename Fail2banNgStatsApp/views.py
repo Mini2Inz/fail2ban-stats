@@ -23,7 +23,7 @@ class LineChartJSONView(BaseLineChartView):
         return ["Niedziela", "Poniedziałek", "Wtorek", "Środa"]
 
     def get_providers(self):
-        return ["Chiny", "Korea Północna", "Ukraina"]
+        return ["Chiny", "Korea Południowa", "Ukraina"]
 
     def get_data(self):
         return [[30, 12, 5, 20],
@@ -35,10 +35,12 @@ line_chart = TemplateView.as_view(template_name='line_chart.html')
 line_chart_json = LineChartJSONView.as_view()
 
 
+class PieChart:
+    def get_providers(self):
+        return ["Chiny", "Korea Południowa", "Ukraina"]
 
-
-
-
+    def get_data(self):
+        return  [12, 9, 3]
 
 
 class ComplexEncoder(json.JSONEncoder):

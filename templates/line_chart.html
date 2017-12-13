@@ -8,6 +8,7 @@
 
 <html>
 <head>
+    <link rel="shortcut icon" type="image/png" href="{% static '/statsico.png' %}">
     <title>Fail2ban-ng Stats</title>
     <!--[if lte IE 8]>
             <script src="{% static 'js/excanvas.js' %}"></script>
@@ -16,67 +17,73 @@
 </head>
 <body>
 
-    <header>
-        <h1>Fail2ban-ng Statystyki</h1>
-    </header>
-    <div class="flex-container">
+<header>
+    <h1>Fail2ban-ng Statystyki</h1>
+</header>
+<div class="flex-container">
 
-        <canvas id="line_chart"></canvas>
-        <script type="text/javascript">
-            $.get('{% url "line_chart_json" %}', function (data) {
-                var ctx = $("#line_chart").get(0).getContext("2d");
-                new Chart(ctx, {
-                    type: 'line', data: data
-                });
+    <canvas id="line_chart"></canvas>
+    <script type="text/javascript">
+        $.get('{% url "line_chart_json" %}', function (data) {
+            var ctx = $("#line_chart").get(0).getContext("2d");
+            new Chart(ctx, {
+                type: 'line', data: data
             });
-        </script>
+        });
+    </script>
 
-            </canvas>
-            <canvas id="pie_chart"></canvas>
-            <script type="text/javascript">
-                var ctx = document.getElementById("pie_chart").getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: ["Korea Północna", "Chiny", "Ukraina"],
-                        datasets: [{
-                            backgroundColor: [
-                                "#2ecc71",
-                                "#3498db",
-                                "#95a5a6"
-                            ],
-                            data: [12, 9, 3]
-                        }]
-                    }
-                });
+    </canvas>
+    <canvas id="pie_chart"></canvas>
+    <script type="text/javascript">
+        var ctx = document.getElementById("pie_chart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ["Korea Południowa", "Chiny", "Ukraina"],
+                datasets: [{
+                    backgroundColor: [
+                        "#2ecc71",
+                        "#3498db",
+                        "#95a5a6"
+                    ],
+                    data: [12, 9, 3]
+                }]
+            }
+        });
 
-            </script>
+    </script>
 
-            </canvas>
-            <canvas id="polar_chart"></canvas>
-            <script type="text/javascript">
-                var ctx = document.getElementById("polar_chart");
-                var myChart = new Chart(ctx, {
-                    type: 'radar',
-                    data: {
-                        labels: ["Korea Północna", "Chiny", "Ukraina"],
-                        datasets: [{
-                            label: 'poniedziałek',
-                            backgroundColor: "rgba(153,255,51,0.4)",
-                            borderColor: "rgba(153,255,51,1)",
-                            data: [12, 19, 3, 17]
-                        }, {
-                            label: 'wtorek',
-                            backgroundColor: "rgba(255,47,30,0.4)",
-                            borderColor: "rgba(255,153,0,1)",
-                            data: [12, 9, 3]
-                        }]
-                    }
-                });
+    </canvas>
+    <canvas id="polar_chart"></canvas>
+    <script type="text/javascript">
+        var ctx = document.getElementById("polar_chart");
+        var myChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ["Korea Południowa", "Chiny", "Ukraina"],
+                datasets: [{
+                    label: 'poniedziałek',
+                    backgroundColor: "rgba(153,255,51,0.4)",
+                    borderColor: "rgba(153,255,51,1)",
+                    data: [12, 19, 3]
+                }, {
+                    label: 'wtorek',
+                    backgroundColor: "rgba(255,47,30,0.4)",
+                    borderColor: "rgba(255,153,0,1)",
+                    data: [12, 9, 3]
+                },
+                {
+                    label: 'środa',
+                    backgroundColor: "rgba(100,30,250,0.4)",
+                    borderColor: "rgba(50,30,250,1)",
+                    data: [13, 11, 4]
+                }]
+            }
+        });
 
 
-            </script>
-    </div>
+    </script>
+</div>
 
 </body>
 </html>
