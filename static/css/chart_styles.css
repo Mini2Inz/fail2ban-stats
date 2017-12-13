@@ -6,23 +6,22 @@ header, footer {
     text-align: center;
 }
 
-linechart {
+chart {
     float: left;
     max-width: 500px;
     margin: 0;
     padding: 1em;
 }
 
-piechart {
-    float: left;
-    max-width: 500px;
-    margin: 0;
-    padding: 1em;
+.flex-container {
+    display: flex;
+    width:635px;
 }
 
-polarchart {
-    float: right;
-    max-width: 500px;
-    margin: 0;
-    padding: 1em;
+.flex-container > div {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    text-align: center;
+    border: 1px solid black;
 }
