@@ -1,4 +1,4 @@
-FROM python
+FROM python:3
 
 COPY . /fail2ban-stats
 WORKDIR /fail2ban-stats
