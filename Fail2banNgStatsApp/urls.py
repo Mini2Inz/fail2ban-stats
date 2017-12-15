@@ -4,8 +4,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-                  url(r'^line_chart/json/$', views.line_chart_json, name='line_chart_json'),
-                  url(r'^$', views.line_chart, name='line_chart'),
+                  url(r'^charts/json/$', views.charts_json, name='charts_json'),
+                  url(r'^$', views.charts, name='charts'),
 
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

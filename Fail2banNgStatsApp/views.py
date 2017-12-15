@@ -1,5 +1,6 @@
 import json
 from django.shortcuts import render
+from django.http import JsonResponse
 from flask import Flask
 from flask import Markup
 from flask import Flask
@@ -9,16 +10,14 @@ from django.views.generic import TemplateView
 from django import http
 from chartjs.views.lines import BaseLineChartView
 from django.views.generic import TemplateView
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from django.contrib.auth.models import User
 
 import arrow
 
 
-def index(request):
-    return render(request, 'index.html')
-
-
-class LineChartJSONView(BaseLineChartView):
+class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
         return ["Niedziela", "Poniedziałek", "Wtorek", "Środa"]
 
@@ -31,16 +30,31 @@ class LineChartJSONView(BaseLineChartView):
                 [1, 2, 4, 3]]
 
 
-line_chart = TemplateView.as_view(template_name='line_chart.html')
-line_chart_json = LineChartJSONView.as_view()
+charts = TemplateView.as_view(template_name='charts.html')
+charts_json = ChartsJSONView.as_view()
+
+def pie_chart_get_labels(request, *args, **kwargs):
+    labels = ["Korea Południowa", "Chiny", "Ukraina"];
+    data = {
+            'labels': labels,
+            'datasets': [
 
 
-class PieChart:
-    def get_providers(self):
-        return ["Chiny", "Korea Południowa", "Ukraina"]
+            ]
+    }
+    return JsonResponse(data)
 
-    def get_data(self):
-        return  [12, 9, 3]
+
+# data: {
+#     labels: ["Korea Południowa", "Chiny", "Ukraina"],
+#     datasets: [{
+#         backgroundColor: [
+#             "#2ecc71",
+#             "#3498db",
+#             "#95a5a6"
+#         ],
+#         data: [12, 9, 3]
+#     }]
 
 
 class ComplexEncoder(json.JSONEncoder):
@@ -69,3 +83,10 @@ class JSONResponseMixin(object):
 class JSONView(JSONResponseMixin, TemplateView):
     pass
 
+class ListUsers(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+        usernames = [user.username for user in User.objects.all()]
+        return Response(usernames)

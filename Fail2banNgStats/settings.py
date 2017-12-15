@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # 'django_static_jquery',
     'Fail2banNgStatsApp',
     'static',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

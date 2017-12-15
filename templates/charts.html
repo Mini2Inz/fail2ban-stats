@@ -24,7 +24,7 @@
 
     <canvas id="line_chart"></canvas>
     <script type="text/javascript">
-        $.get('{% url "line_chart_json" %}', function (data) {
+        $.get('{% url "charts_json" %}', function (data) {
             var ctx = $("#line_chart").get(0).getContext("2d");
             new Chart(ctx, {
                 type: 'line', data: data
