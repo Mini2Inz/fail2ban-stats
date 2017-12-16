@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from Fail2banNgStatsApp.views import ChartData
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('Fail2banNgStatsApp.urls')),
+    url(r'^api/chart/data/$', ChartData.as_view()),
 ]

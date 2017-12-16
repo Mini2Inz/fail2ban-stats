@@ -83,10 +83,15 @@ class JSONResponseMixin(object):
 class JSONView(JSONResponseMixin, TemplateView):
     pass
 
-class ListUsers(APIView):
+class ChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
     def get(self, request, format=None):
-        usernames = [user.username for user in User.objects.all()]
-        return Response(usernames)
+        labels = ["Korea Południowa", "Chiny", "Ukraina"]
+        default_items = [23, 3, 12]
+        data = {
+                "labels": labels,
+                "default": default_items,
+        }
+        return Response(data)
