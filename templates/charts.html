@@ -40,20 +40,23 @@
             var endpoint = '/api/chart/data/'
             var defaultData = []
             var labels = [];
+            var colors = [];
             $.ajax({
                 method: "GET",
                 url: endpoint,
                 success: function (data) {
                     labels = data.labels
                     defaultData = data.default
+                    colors = data.colors
+                    setChart()
                 },
                 error: function (error_data) {
                     console.log("error")
                     console.log(error_data)
                 }
             })
-
-            var ctx = document.getElementById("pie_chart").getContext('2d');
+            function setChart(){
+            var ctx = document.getElementById("pie_chart");
             var myChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
@@ -64,10 +67,10 @@
                             "#3498db",
                             "#95a5a6"
                         ],
-                        data: [12, 9, 3]
+                        data: defaultData
                     }]
                 }
-            });
+            })};
 
         </script>
 

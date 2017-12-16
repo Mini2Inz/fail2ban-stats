@@ -33,14 +33,14 @@ class ChartsJSONView(BaseLineChartView):
 charts = TemplateView.as_view(template_name='charts.html')
 charts_json = ChartsJSONView.as_view()
 
+
 def pie_chart_get_labels(request, *args, **kwargs):
     labels = ["Korea Południowa", "Chiny", "Ukraina"];
     data = {
-            'labels': labels,
-            'datasets': [
+        'labels': labels,
+        'datasets': [
 
-
-            ]
+        ]
     }
     return JsonResponse(data)
 
@@ -83,6 +83,7 @@ class JSONResponseMixin(object):
 class JSONView(JSONResponseMixin, TemplateView):
     pass
 
+
 class ChartData(APIView):
     authentication_classes = []
     permission_classes = []
@@ -90,8 +91,12 @@ class ChartData(APIView):
     def get(self, request, format=None):
         labels = ["Korea Południowa", "Chiny", "Ukraina"]
         default_items = [23, 3, 12]
+        background_colors = ["#2ecc71",
+                             "#3498db",
+                             "#95a5a6"]
         data = {
-                "labels": labels,
-                "default": default_items,
+            "labels": labels,
+            "default": default_items,
+            "colors": background_colors,
         }
         return Response(data)
