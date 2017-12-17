@@ -34,18 +34,6 @@ charts = TemplateView.as_view(template_name='charts.html')
 charts_json = ChartsJSONView.as_view()
 
 
-# data: {
-#     labels: ["Korea Południowa", "Chiny", "Ukraina"],
-#     datasets: [{
-#         backgroundColor: [
-#             "#2ecc71",
-#             "#3498db",
-#             "#95a5a6"
-#         ],
-#         data: [12, 9, 3]
-#     }]
-
-
 class ComplexEncoder(json.JSONEncoder):
     def default(self, obj):
         try:
@@ -96,22 +84,22 @@ class PolarChartData(APIView):
     permission_classes = []
 
     def get(self, request, format=None):
-        labels = ["Rosja", "Chiny", "Włochy"]
+        labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
         datasets = [{
-            "label": 'poniedziałek',
+            "label": 'Ukraina',
             "backgroundColor": "rgba(153,255,51,0.4)",
             "borderColor": "rgba(153,255,51,1)",
-            "data": [12, 19, 3],
+            "data": [3, 7, 8, 9, 4],
         }, {
-            "label": 'wtorek',
+            "label": 'Chiny',
             "backgroundColor": "rgba(255,47,30,0.4)",
             "borderColor": "rgba(255,153,0,1)",
-            "data": [12, 9, 3]
+            "data": [12, 14, 11, 11, 10]
         }, {
-            "label": 'środa',
+            "label": 'Korea Południowa',
             "backgroundColor": "rgba(100,30,250,0.4)",
             "borderColor": "rgba(50,30,250,1)",
-            "data": [13, 11, 4]
+            "data": [9, 11, 7, 8, 6]
         }]
 
         data = {
@@ -120,26 +108,3 @@ class PolarChartData(APIView):
         }
 
         return Response(data)
-
-
-        # data: {
-        #     labels: ["Korea Południowa", "Chiny", "Ukraina"],
-        #     datasets: [{
-        #         label: 'poniedziałek',
-        #         backgroundColor: "rgba(153,255,51,0.4)",
-        #         borderColor: "rgba(153,255,51,1)",
-        #         data: [12, 19, 3]
-        #     }, {
-        #         label: 'wtorek',
-        #         backgroundColor: "rgba(255,47,30,0.4)",
-        #         borderColor: "rgba(255,153,0,1)",
-        #         data: [12, 9, 3]
-        #     },
-        #         {
-        #             label: 'środa',
-        #             backgroundColor: "rgba(100,30,250,0.4)",
-        #             borderColor: "rgba(50,30,250,1)",
-        #             data: [13, 11, 4]
-        #         }]
-        # }
-        # });
