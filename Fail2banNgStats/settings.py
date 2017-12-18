@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'Fail2banNgStatsApp',
     'static',
     'rest_framework',
+    'django_numpy',
 ]
 
 MIDDLEWARE = [
