@@ -31,10 +31,13 @@ class ServerListReader(APIView):
         jsonOut = {
             "dataset":[]
         }
-        fieldnames = ("Number", "Address", "Port")
+        fieldnames = ("Number", "Address", "Port", "Bans")
         reader = csv.DictReader(csvfile, fieldnames, dialect="Dial")
         for row in reader:
             jsonOut["dataset"].append(row)
-            print(row)
-        print(jsonOut["dataset"])
+        #     print(row)
+        # print(jsonOut["dataset"])
         return Response(jsonOut)
+
+
+

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'static',
     'rest_framework',
     'django_numpy',
+    'django_tables2',
 ]
 
 MIDDLEWARE = [

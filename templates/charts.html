@@ -70,8 +70,8 @@
             ;
 
         </script>
-
         </canvas>
+
         <canvas id="polar_chart"></canvas>
         <script type="text/javascript">
             var endpoint = '/api/chart/data/polar'
@@ -99,7 +99,44 @@
 
 
         </script>
-    </div>
+  </div>
+        <table id="generated"/>
+        <script type="text/javascript">
+            var endpoint = '/api/chart/data/serverList'
+            var dData = [];
+            $.ajax({
+                method: "GET",
+                url: endpoint,
+                success: function (data) {
+                    dData = data.dataset;
+                    setTable()
+                },
+                error: function (error_data) {
+                    console.log("error")
+                    console.log(error_data)
+                }
+            })
+            function setTable() {
+                var len = dData.length;
+                for (var i = 0; i < len; i++) {
+
+                    var number = dData[i].Number;
+                    var address = dData[i].Address;
+                    var port = dData[i].Port;
+                    var bans = dData[i].Bans;
+
+                     $("#generated").append("<tr><td>"+ number +"</td><td>"+ address +"</td><td>"+ port +"</td><td>"+ bans +"</td></tr>");
+
+                }
+            }
+            ;
+        </script>
+
+
+
+
+
+
 {% endblock %}
 </body>
 </html>
