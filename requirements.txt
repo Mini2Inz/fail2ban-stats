@@ -1,5 +1,4 @@
 django_tables2==1.17.1
-django_numpy=1.13.3
 arrow==0.12.0
 chartjs==1.2
 click==6.7
@@ -14,3 +13,5 @@ MarkupSafe==1.0
 pytz==2017.3
 six==1.11.0
 Werkzeug==0.13
+
+

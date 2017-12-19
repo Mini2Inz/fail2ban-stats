@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'Fail2banNgStatsApp',
     'static',
     'rest_framework',
-    'django_numpy',
     'django_tables2',
 ]
 

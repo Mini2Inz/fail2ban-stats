@@ -1,7 +1,6 @@
 import sys
 import csv
 import json
-from numpy import genfromtxt
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
