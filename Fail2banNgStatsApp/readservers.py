@@ -34,8 +34,6 @@ class ServerListReader(APIView):
         reader = csv.DictReader(csvfile, fieldnames, dialect="Dial")
         for row in reader:
             jsonOut["dataset"].append(row)
-        #     print(row)
-        # print(jsonOut["dataset"])
         return Response(jsonOut)
 
 

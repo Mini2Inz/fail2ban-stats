@@ -10,6 +10,7 @@ urlpatterns = [
                   url(r'^$', views.charts, name='charts'),
                   url(r'^api/chart/data/pie$', PieChartData.as_view()),
                   url(r'^api/chart/data/polar$', PolarChartData.as_view()),
-                  url(r'^api/chart/data/serverList$', ServerListReader.as_view())
+                  url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
+                  url(r'^refresh$', views.refresh, name='refresh')
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,4 +1,5 @@
 import json
+import socket
 from django.shortcuts import render
 from django.http import JsonResponse
 from flask import Flask
@@ -13,7 +14,6 @@ from django.views.generic import TemplateView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-
 
 
 class ChartsJSONView(BaseLineChartView):
@@ -65,7 +65,7 @@ class PieChartData(APIView):
     permission_classes = []
 
     def get(self, request, format=None):
-        labels = ["Korea Południowa", "Chiny", "Ukraina"]
+        labels = ["Chiny", "Korea Południowa", "Ukraina"]
         default_items = [23, 3, 12]
         background_colors = ["#2ecc71",
                              "#3498db",
@@ -76,6 +76,21 @@ class PieChartData(APIView):
             "colors": background_colors,
         }
         return Response(data)
+
+
+def refresh(request):
+    UDP_IP = '127.0.0.1'
+    UDP_PORT = 6942
+    MESSAGE = 'Hi.'
+
+    print('UDP target IP: ' + UDP_IP)
+    print(UDP_PORT)
+    print('Message: ' + MESSAGE)
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.sendto(MESSAGE.encode(), (UDP_IP, UDP_PORT))
+
+    return JsonResponse({"ok": True})
 
 
 class PolarChartData(APIView):

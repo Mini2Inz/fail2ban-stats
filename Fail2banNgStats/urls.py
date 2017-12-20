@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from Fail2banNgStatsApp.views import PieChartData,PolarChartData
+from Fail2banNgStatsApp.views import PieChartData,PolarChartData,refresh
 from Fail2banNgStatsApp.readservers import ServerListReader
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^', include('Fail2banNgStatsApp.urls')),
     url(r'^api/chart/data/pie$', PieChartData.as_view()),
     url(r'^api/chart/data/polar$', PolarChartData.as_view()),
-    url(r'^api/chart/data/serverList$', ServerListReader.as_view())
+    url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
+    url(r'^refresh$', refresh, name='refresh')
 
 ]
