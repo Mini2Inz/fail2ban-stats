@@ -13,20 +13,21 @@ from chartjs.views.lines import BaseLineChartView
 from django.views.generic import TemplateView
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from .models import BansTableData
 from django.contrib.auth.models import User
 
 
 class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
-        return ["Niedziela", "Poniedziałek", "Wtorek", "Środa"]
+        return ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
 
     def get_providers(self):
         return ["Chiny", "Korea Południowa", "Ukraina"]
 
     def get_data(self):
-        return [[30, 12, 5, 20],
-                [9, 17, 12, 6],
-                [1, 2, 4, 3]]
+        return [[30, 12, 5, 20, 22, 28],
+                [9, 17, 12, 6, 15],
+                [1, 2, 4, 3, 2]]
 
 
 charts = TemplateView.as_view(template_name='charts.html')
@@ -79,16 +80,49 @@ class PieChartData(APIView):
 
 
 def refresh(request):
-    UDP_IP = '127.0.0.1'
-    UDP_PORT = 6942
-    MESSAGE = 'Hi.'
+    HOST = '127.0.0.1'
+    PORT = 22
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        s.sendall(('BANS').encode())
+        data = s.recv(1024)
+    print('Received', repr(data))
 
-    print('UDP target IP: ' + UDP_IP)
-    print(UDP_PORT)
-    print('Message: ' + MESSAGE)
+    s.close()
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.sendto(MESSAGE.encode(), (UDP_IP, UDP_PORT))
+    HOST = '127.0.0.1'
+    PORT = 28
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((HOST, PORT))
+        s.listen(1)
+        conn, addr = s.accept()
+        with conn:
+            print('Connected by', addr)
+            while True:
+                data = conn.recv(1024)
+                if data.decode() == '\n': break
+                conn.sendall(data)
+                print(data.decode())
+                dataDec = data.decode()
+                divided = dataDec.split(',')
+
+                jail = divided[0]
+                ip = divided[1]
+                timeofban = divided[2]
+                bantime = divided[3]
+
+                print(jail)
+                print(ip)
+                print(timeofban)
+                print(bantime)
+
+                banData = BansTableData()
+                banData.jail = jail
+                banData.ip = ip
+                banData.timeofban = timeofban
+                banData.bantime = banData
+                banData.save()
 
     return JsonResponse({"ok": True})
 
