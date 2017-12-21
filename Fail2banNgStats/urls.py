@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from Fail2banNgStatsApp.views import PieChartData,PolarChartData,refresh
 from Fail2banNgStatsApp.readservers import ServerListReader
+from Fail2banNgStatsApp.bansfromdb import BansListReader
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -24,6 +25,7 @@ urlpatterns = [
     url(r'^api/chart/data/pie$', PieChartData.as_view()),
     url(r'^api/chart/data/polar$', PolarChartData.as_view()),
     url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
-    url(r'^refresh$', refresh, name='refresh')
+    url(r'^refresh$', refresh, name='refresh'),
+    url(r'^api/chart/data/bans$', BansListReader.as_view()),
 
 ]

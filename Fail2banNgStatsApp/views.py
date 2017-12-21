@@ -81,17 +81,12 @@ class PieChartData(APIView):
 
 def refresh(request):
     HOST = '127.0.0.1'
-    PORT = 22
+    PORT = 8000
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
         s.sendall(('BANS').encode())
         data = s.recv(1024)
     print('Received', repr(data))
-
-    s.close()
-
-    HOST = '127.0.0.1'
-    PORT = 28
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
@@ -120,8 +115,19 @@ def refresh(request):
                 banData = BansTableData()
                 banData.jail = jail
                 banData.ip = ip
-                banData.timeofban = timeofban
-                banData.bantime = banData
+
+                try:
+                    int(timeofban)
+                    banData.timeofban = int(timeofban)
+                except ValueError:
+                    banData.timeofban = -1
+
+                try:
+                    int(bantime)
+                    banData.bantime = int(bantime)
+                except ValueError:
+                    banData.bantime = -1
+
                 banData.save()
 
     return JsonResponse({"ok": True})
