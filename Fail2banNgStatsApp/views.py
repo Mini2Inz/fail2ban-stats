@@ -1,5 +1,6 @@
 import json
 import socket
+import csv
 from django.shortcuts import render
 from django.http import JsonResponse
 from flask import Flask
@@ -82,52 +83,69 @@ class PieChartData(APIView):
 def refresh(request):
     HOST = '127.0.0.1'
     PORT = 7500
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-        s.sendall(('BANS').encode())
-        data = s.recv(1024)
-    print('Received', repr(data))
-    s.bind((HOST, PORT))
-    s.listen(1)
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        while True:
-            data = conn.recv(1024)
-            if data.decode() == '\n': break
-            conn.sendall(data)
-            print(data.decode())
-            dataDec = data.decode()
-            divided = dataDec.split(',')
+    csv.register_dialect("Dial", delimiter='/')
+    csvfile = open('ServerList.csv', 'r')
+    fieldnames = ("Number", "Address", "Port")
+    reader = csv.DictReader(csvfile, fieldnames, dialect="Dial")
+    for row in reader:
+        for key, value in row.items():
+            if key == 'Port':
+                PORT = int(value)
+            if key == 'Address':
+                HOST = value
 
-            jail = divided[0]
-            ip = divided[1]
-            timeofban = divided[2]
-            bantime = divided[3]
-
-            print(jail)
-            print(ip)
-            print(timeofban)
-            print(bantime)
-
-            banData = BansTableData()
-            banData.jail = jail
-            banData.ip = ip
-
+        print(PORT, HOST)
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
-                int(timeofban)
-                banData.timeofban = int(timeofban)
-            except ValueError:
-                banData.timeofban = -1
+                s.connect((HOST, PORT))
+            except ConnectionRefusedError:
+                print("Connection refused:")
+                print(PORT,HOST)
+                continue
+            s.sendall(('BANS').encode())
+            data = s.recv(1024)
+        print('Received', repr(data))
+        s.bind((HOST, PORT))
+        s.listen(1)
+        conn, addr = s.accept()
+        with conn:
+            print('Connected by', addr)
+            while True:
+                data = conn.recv(1024)
+                if data.decode() == '\n': break
+                conn.sendall(data)
+                print(data.decode())
+                dataDec = data.decode()
+                divided = dataDec.split(',')
 
-            try:
-                int(bantime)
-                banData.bantime = int(bantime)
-            except ValueError:
-                banData.bantime = -1
+                jail = divided[0]
+                ip = divided[1]
+                timeofban = divided[2]
+                bantime = divided[3]
 
-            banData.save()
-            return JsonResponse({"ok": True})
+                print(jail)
+                print(ip)
+                print(timeofban)
+                print(bantime)
+
+                banData = BansTableData()
+                banData.jail = jail
+                banData.ip = ip
+
+                try:
+                    int(timeofban)
+                    banData.timeofban = int(timeofban)
+                except ValueError:
+                    banData.timeofban = -1
+
+                try:
+                    int(bantime)
+                    banData.bantime = int(bantime)
+                except ValueError:
+                    banData.bantime = -1
+
+                banData.save()
+                return JsonResponse({"ok": True})
 
 
 class PolarChartData(APIView):
