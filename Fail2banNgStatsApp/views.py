@@ -34,6 +34,8 @@ class ChartsJSONView(BaseLineChartView):
 charts = TemplateView.as_view(template_name='charts.html')
 charts_json = ChartsJSONView.as_view()
 
+control = TemplateView.as_view(template_name='index.html')
+
 
 class ComplexEncoder(json.JSONEncoder):
     def default(self, obj):

@@ -142,24 +142,7 @@
 
 
 
-    <input type="button" id="refresh" name="{{ company_slugs }}" value="Refresh"/>
 
-    <script>
-        var endpoint ='/refresh';
-
-        $('#refresh').click(function () {
-            $.ajax({
-                url: endpoint,
-                success: function (response) {
-                alert("Refresh done")
-
-                },
-                error: function (rs, e) {
-                alert(rs.responseText);
-                }
-            });
-        })
-    </script>
 
 
 

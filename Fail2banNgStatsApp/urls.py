@@ -9,6 +9,7 @@ from .bansfromdb import BansListReader
 urlpatterns = [
                   url(r'^charts/json/$', views.charts_json, name='charts_json'),
                   url(r'^$', views.charts, name='charts'),
+                  url(r'^control$', views.control, name='index'),
                   url(r'^api/chart/data/pie$', PieChartData.as_view()),
                   url(r'^api/chart/data/polar$', PolarChartData.as_view()),
                   url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
