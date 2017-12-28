@@ -16,5 +16,6 @@ urlpatterns = [
                   url(r'^refresh$', views.refresh, name='refresh'),
                   url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
                   url(r'^api/chart/data/bans$', BansListReader.as_view()),
+                  url(r'^refresh_location$', views.refresh_location, name='refresh_location'),
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

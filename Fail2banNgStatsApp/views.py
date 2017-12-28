@@ -82,6 +82,16 @@ class PieChartData(APIView):
         return Response(data)
 
 
+def refresh_location(request):
+    HOST = '127.0.0.1'
+    PORT = 7500
+    csv.register_dialect("Dial", delimiter='/')
+    csvfile = open('ServerList.csv', 'r')
+    fieldnames = ("Number", "Address", "Port")
+    reader = csv.DictReader(csvfile, fieldnames, dialect="Dial")
+    return JsonResponse({"ok": True})
+
+
 def refresh(request):
     HOST = '127.0.0.1'
     PORT = 7500

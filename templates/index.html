@@ -1,3 +1,9 @@
+{% load static %}
+<script type="text/javascript" src="{% static 'js/jQuery.js' %}"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+{#<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>#}
+{#        <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js" type="text/javascript"></script>#}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,24 +12,25 @@
 </head>
 <body>
 
-    <input type="button" id="refresh" name="{{ company_slugs }}" value="Refresh"/>
+<input type="button" id="refresh_bans" name="{{ company_slugs }}" value="Refresh Bans"/>
+<input type="button" id="refresh_locations" name="{{ company_slugs }}" value="Refresh Locations"/>
 
-    <script>
-        var endpoint ='/refresh';
+<script>
+    var endpoint = '/refresh';
 
-        $('#refresh').click(function () {
-            $.ajax({
-                url: endpoint,
-                success: function (response) {
+    $('#refresh_bans').click(function () {
+        $.ajax({
+            url: endpoint,
+            success: function (response) {
                 alert("Refresh done")
 
-                },
-                error: function (rs, e) {
+            },
+            error: function (rs, e) {
                 alert(rs.responseText);
-                }
-            });
-        })
-    </script>
+            }
+        });
+    })
+</script>
 
 
 </body>
