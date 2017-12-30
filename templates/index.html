@@ -32,6 +32,24 @@
     })
 </script>
 
+<script>
+    var endpoint = '/refresh_location';
+
+    $('#refresh_locations').click(function () {
+        $.ajax({
+            url: endpoint,
+            success: function (response) {
+                alert("Refresh done")
+
+            },
+            error: function (rs, e) {
+                alert(rs.responseText);
+            }
+        });
+    })
+</script>
+
+
 
 </body>
 </html>

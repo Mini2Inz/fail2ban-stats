@@ -11,6 +11,7 @@ class LineChartData(models.Model):
     class Meta:
         db_table = "linechartdata"
 
+
 class BansTableData(models.Model):
     jail = models.CharField(max_length=50)
     ip = models.CharField(max_length=50)
@@ -19,3 +20,12 @@ class BansTableData(models.Model):
 
     class Meta:
         db_table = "banstabledata"
+
+
+class LocationTableData(models.Model):
+    code = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
+    banscount = models.IntegerField()
+
+    class Meta:
+        db_table = "locationtabledata"

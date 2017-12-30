@@ -14,7 +14,7 @@ from chartjs.views.lines import BaseLineChartView
 from django.views.generic import TemplateView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import BansTableData
+from .models import BansTableData, LocationTableData
 from django.contrib.auth.models import User
 
 
@@ -89,7 +89,50 @@ def refresh_location(request):
     csvfile = open('ServerList.csv', 'r')
     fieldnames = ("Number", "Address", "Port")
     reader = csv.DictReader(csvfile, fieldnames, dialect="Dial")
-    return JsonResponse({"ok": True})
+    for row in reader:
+        for key, value in row.items():
+            if key == 'Port':
+                PORT = int(value)
+            if key == 'Address':
+                HOST = value
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.connect((HOST, PORT))
+            except ConnectionRefusedError:
+                print("Connection refused:")
+                print(PORT, HOST)
+                continue
+            s.sendall(('LOCATIONS').encode())
+            with s:
+                print('Connected by', HOST)
+                while True:
+                    data = s.recv(1024)
+                    if data.decode() == '\n': break
+                    # s.sendall(data)
+                    print(data.decode())
+                    dataDec = data.decode()
+                    divided = dataDec.split(',')
+
+                    code = divided[0]
+                    name = divided[1]
+                    banscount = divided[2]
+
+                    print(code)
+                    print(name)
+                    print(banscount)
+
+                    locationData = LocationTableData()
+                    locationData.code = code
+                    locationData.name = name
+
+                    try:
+                        int(locationData)
+                        locationData.banscount = int(banscount)
+                    except ValueError:
+                        locationData.banscount = -1
+
+                    locationData.save()
+                    return JsonResponse({"ok": True})
 
 
 def refresh(request):
@@ -119,7 +162,7 @@ def refresh(request):
                 while True:
                     data = s.recv(1024)
                     if data.decode() == '\n': break
-                    s.sendall(data)
+                    # s.sendall(data)
                     print(data.decode())
                     dataDec = data.decode()
                     divided = dataDec.split(',')
