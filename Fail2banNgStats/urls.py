@@ -18,6 +18,7 @@ from django.contrib import admin
 from Fail2banNgStatsApp.views import PieChartData, PolarChartData, refresh, control
 from Fail2banNgStatsApp.readservers import ServerListReader
 from Fail2banNgStatsApp.bansfromdb import BansListReader
+from Fail2banNgStatsApp.locationsfromdb import LocationListReader
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -27,5 +28,6 @@ urlpatterns = [
     url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
     url(r'^control$', control, name='index'),
     url(r'^api/chart/data/bans$', BansListReader.as_view()),
+    url(r'^api/chart/data/locations$', LocationListReader.as_view()),
 
 ]

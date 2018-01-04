@@ -5,6 +5,7 @@ from django.conf import settings
 from .views import PieChartData, PolarChartData
 from .readservers import ServerListReader
 from .bansfromdb import BansListReader
+from .locationsfromdb import LocationListReader
 
 urlpatterns = [
                   url(r'^charts/json/$', views.charts_json, name='charts_json'),
@@ -16,6 +17,7 @@ urlpatterns = [
                   url(r'^refresh$', views.refresh, name='refresh'),
                   url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
                   url(r'^api/chart/data/bans$', BansListReader.as_view()),
+                  url(r'^api/chart/data/locations$', LocationListReader.as_view()),
                   url(r'^refresh_location$', views.refresh_location, name='refresh_location'),
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
