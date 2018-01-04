@@ -13,5 +13,6 @@ MarkupSafe==1.0
 pytz==2017.3
 six==1.11.0
 Werkzeug==0.13
-
+sqlalchemy>=1.0.14
+celery>=4.0
 
