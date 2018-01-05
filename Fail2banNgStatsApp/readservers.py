@@ -3,6 +3,7 @@ import csv
 import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from Fail2banNgStatsApp.models import BansTableData
 
 
 # class ServerListReader(APIView):
@@ -28,13 +29,12 @@ class ServerListReader(APIView):
         csv.register_dialect("Dial", delimiter='/')
         csvfile = open('ServerList.csv', 'r')
         jsonOut = {
-            "dataset":[]
+            "dataset": []
         }
-        fieldnames = ("Number", "Address", "Port")
+        fieldnames = ("Number", "Address", "Port", "Bans")
         reader = csv.DictReader(csvfile, fieldnames, dialect="Dial")
         for row in reader:
+            row["Bans"] = BansTableData.objects.filter(recived_from_address=row["Address"]).count()
             jsonOut["dataset"].append(row)
+            print(row["Bans"])
         return Response(jsonOut)
-
-
-
