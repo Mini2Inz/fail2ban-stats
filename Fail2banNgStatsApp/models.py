@@ -17,6 +17,8 @@ class BansTableData(models.Model):
     ip = models.CharField(max_length=50)
     timeofban = models.IntegerField()
     bantime = models.IntegerField()
+    recived_from_address = models.CharField(max_length=50, default='UNKNOWN')
+    recived_from_port = models.CharField(max_length=50, default='UNKNOWN')
 
     class Meta:
         db_table = "banstabledata"

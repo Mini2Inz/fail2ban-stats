@@ -17,11 +17,15 @@ class BansListReader(APIView):
             print(b.ip)
             print(b.bantime)
             print(b.timeofban)
+            print(b.recived_from_address)
+            print(b.recived_from_port)
             row = {
                 "jail": b.jail,
                 "ip": b.ip,
                 "bantime": b.bantime,
-                "timeofban": b.timeofban
+                "timeofban": b.timeofban,
+                "recived_from_address": b.recived_from_address,
+                "recived_from_port": b.recived_from_port
             }
             allEntries["dateset"].append(row)
         return Response(allEntries)
