@@ -171,15 +171,11 @@ def refresh(request):
                     ip = divided[1]
                     timeofban = divided[2]
                     bantime = divided[3]
-                    host = divided[4]
-                    port = divided[5]
 
                     print(jail)
                     print(ip)
                     print(timeofban)
                     print(bantime)
-                    print(host)
-                    print(port)
 
                     banData = BansTableData()
                     banData.jail = jail

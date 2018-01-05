@@ -34,7 +34,7 @@ class ServerListReader(APIView):
         fieldnames = ("Number", "Address", "Port", "Bans")
         reader = csv.DictReader(csvfile, fieldnames, dialect="Dial")
         for row in reader:
-            row["Bans"] = BansTableData.objects.filter(recived_from_address=row["Address"]).count()
+            row["Bans"] = BansTableData.objects.filter(recived_from_address=row["Address"],
+                                                       recived_from_port=row["Port"]).count()
             jsonOut["dataset"].append(row)
-            print(row["Bans"])
         return Response(jsonOut)
