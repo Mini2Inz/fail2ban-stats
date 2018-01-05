@@ -132,7 +132,7 @@ def refresh_location(request):
                         locationData.banscount = -1
 
                     locationData.save()
-                    return JsonResponse({"ok": True})
+    return JsonResponse({"ok": True})
 
 
 def refresh(request):
@@ -196,7 +196,7 @@ def refresh(request):
                         banData.bantime = -1
 
                     banData.save()
-                    return JsonResponse({"ok": True})
+    return JsonResponse({"ok": True})
 
 
 class PolarChartData(APIView):
