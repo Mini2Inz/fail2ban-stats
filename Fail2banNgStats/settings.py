@@ -14,7 +14,7 @@ import os
 
 # Celery settings
 
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
+CELERY_BROKER_URL = 'amqp://localhost'
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'static',
     'rest_framework',
     'django_tables2',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
