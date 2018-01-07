@@ -2,7 +2,7 @@ from django.conf.urls import url
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
-from .views import PieChartData, PolarChartData
+from .views import PieChartData, PolarChartData, on_startup
 from .readservers import ServerListReader
 from .bansfromdb import BansListReader
 from .locationsfromdb import LocationListReader

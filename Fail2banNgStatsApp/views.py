@@ -3,6 +3,7 @@ import socket
 import csv
 import calendar
 import locale
+import datetime
 from django.shortcuts import render
 from django.http import JsonResponse
 from flask import Flask
@@ -18,14 +19,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import BansTableData, LocationTableData
 from django.contrib.auth.models import User
-from datetime import datetime
 
 locale.setlocale(locale.LC_ALL, 'pl_PL')
 
 
 def on_startup():
     too_old = datetime.datetime.today() - datetime.timedelta(days=7)
-    LocationTableData.objects.filter(datetime > too_old).delete()
+    LocationTableData.objects.filter(dateTime__gte=too_old).delete()
     return None
 
 
@@ -158,7 +158,7 @@ def refresh_location(request):
             with s:
                 print('Connected by', HOST)
                 while True:
-                    data = s.recv(1024)
+                    data = s.recv(5024)
                     if data.decode() == '\n': break
                     # s.sendall(data)
                     print(data.decode())
@@ -176,9 +176,9 @@ def refresh_location(request):
                     locationData = LocationTableData()
                     locationData.code = code
                     locationData.name = name
-                    locationData.dateTime = datetime.now()
-                    locationData.dayOfTheWeek = datetime.now().weekday()
-                    print(datetime.now())
+                    locationData.dateTime = datetime.datetime.now()
+                    locationData.dayOfTheWeek = datetime.datetime.now().weekday()
+                    print(datetime.datetime.now())
 
                     try:
                         int(banscount)
