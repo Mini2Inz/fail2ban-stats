@@ -19,13 +19,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import BansTableData, LocationTableData
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 locale.setlocale(locale.LC_ALL, 'pl_PL')
 
 
 def on_startup():
-    too_old = datetime.datetime.today() - datetime.timedelta(days=7)
-    LocationTableData.objects.filter(dateTime__gte=too_old).delete()
+    # too_old = datetime.datetime.today() - datetime.timedelta(days=7)
+    # LocationTableData.objects.filter(dateTime__gte=too_old).delete()
     return None
 
 
@@ -90,8 +91,20 @@ class PieChartData(APIView):
     permission_classes = []
 
     def get(self, request, format=None):
-        labels = ["Chiny", "Korea Południowa", "Ukraina"]
-        default_items = [23, 3, 12]
+
+        LTB=LocationTableData()
+        LTB.code='ELS'
+        LTB.name='Elswyr'
+        LTB.banscount=55
+        LTB.dayOfTheWeek=0
+        LTB.save()
+
+        labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+        countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+        default_items = []
+        for c in countries:
+            bans_by_country_sum=LocationTableData.objects.filter(name=c[0]).aggregate(Sum('banscount'))['banscount__sum']
+            default_items.extend([bans_by_country_sum])
         background_colors = ["#2ecc71",
                              "#3498db",
                              "#95a5a6"]
