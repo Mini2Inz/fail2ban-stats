@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import BansTableData, LocationTableData
 from django.contrib.auth.models import User
-
+from datetime import datetime
 
 class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
@@ -81,6 +81,36 @@ class PieChartData(APIView):
         }
         return Response(data)
 
+class PolarChartData(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+        labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
+        datasets = [{
+            "label": 'Ukraina',
+            "backgroundColor": "rgba(153,255,51,0.4)",
+            "borderColor": "rgba(153,255,51,1)",
+            "data": [3, 7, 8, 9, 4],
+        }, {
+            "label": 'Chiny',
+            "backgroundColor": "rgba(255,47,30,0.4)",
+            "borderColor": "rgba(255,153,0,1)",
+            "data": [12, 14, 11, 11, 10]
+        }, {
+            "label": 'Korea Południowa',
+            "backgroundColor": "rgba(100,30,250,0.4)",
+            "borderColor": "rgba(50,30,250,1)",
+            "data": [9, 11, 7, 8, 6]
+        }]
+
+        data = {
+            "labels": labels,
+            "datasets": datasets
+        }
+
+        return Response(data)
+
 
 def refresh_location(request):
     HOST = '127.0.0.1'
@@ -124,6 +154,7 @@ def refresh_location(request):
                     locationData = LocationTableData()
                     locationData.code = code
                     locationData.name = name
+                    locationData.dateTime = datetime.datetime.now()
 
                     try:
                         int(locationData)
@@ -199,32 +230,4 @@ def refresh(request):
     return JsonResponse({"ok": True})
 
 
-class PolarChartData(APIView):
-    authentication_classes = []
-    permission_classes = []
 
-    def get(self, request, format=None):
-        labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
-        datasets = [{
-            "label": 'Ukraina',
-            "backgroundColor": "rgba(153,255,51,0.4)",
-            "borderColor": "rgba(153,255,51,1)",
-            "data": [3, 7, 8, 9, 4],
-        }, {
-            "label": 'Chiny',
-            "backgroundColor": "rgba(255,47,30,0.4)",
-            "borderColor": "rgba(255,153,0,1)",
-            "data": [12, 14, 11, 11, 10]
-        }, {
-            "label": 'Korea Południowa',
-            "backgroundColor": "rgba(100,30,250,0.4)",
-            "borderColor": "rgba(50,30,250,1)",
-            "data": [9, 11, 7, 8, 6]
-        }]
-
-        data = {
-            "labels": labels,
-            "datasets": datasets
-        }
-
-        return Response(data)

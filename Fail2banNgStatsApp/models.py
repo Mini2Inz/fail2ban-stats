@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from datetime import datetime
 
 class LineChartData(models.Model):
     code = models.CharField(max_length=10,  default='UNKNOWN')
@@ -27,7 +27,18 @@ class BansTableData(models.Model):
 class LocationTableData(models.Model):
     code = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
+    dateTime = models.DateTimeField(default=datetime.now, blank=True)
     banscount = models.IntegerField()
 
     class Meta:
         db_table = "locationtabledata"
+
+class LocationTableWeekViewData(models.Model):
+    code = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
+    weekday = models.CharField(max_length=50)
+    banscount = models.IntegerField()
+
+    class Meta:
+        db_table = "locationtabledata"
+
