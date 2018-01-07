@@ -16,10 +16,12 @@ class LocationListReader(APIView):
             print(l.code)
             print(l.name)
             print(l.banscount)
+            print(l.dateTime)
             row = {
                 "code": l.code,
                 "name": l.name,
-                "banscount": l.banscount
+                "banscount": l.banscount,
+                "dateTime": l.dateTime
             }
             allEntries["dateset"].append(row)
         return Response(allEntries)

@@ -154,10 +154,12 @@ def refresh_location(request):
                     locationData = LocationTableData()
                     locationData.code = code
                     locationData.name = name
-                    locationData.dateTime = datetime.datetime.now()
+                    locationData.dateTime = datetime.now()
+                    print(datetime.now())
+
 
                     try:
-                        int(locationData)
+                        int(banscount)
                         locationData.banscount = int(banscount)
                     except ValueError:
                         locationData.banscount = -1
