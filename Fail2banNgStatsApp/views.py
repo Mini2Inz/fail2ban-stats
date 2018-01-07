@@ -1,6 +1,8 @@
 import json
 import socket
 import csv
+import calendar
+import locale
 from django.shortcuts import render
 from django.http import JsonResponse
 from flask import Flask
@@ -18,17 +20,36 @@ from .models import BansTableData, LocationTableData
 from django.contrib.auth.models import User
 from datetime import datetime
 
+locale.setlocale(locale.LC_ALL, 'pl_PL')
+
+
+def on_startup():
+    too_old = datetime.datetime.today() - datetime.timedelta(days=7)
+    LocationTableData.objects.filter(datetime > too_old).delete()
+    return None
+
+
 class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
-        return ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
+        weekDaysDict = [list(calendar.day_name)[int(e[0])] for e in
+                        LocationTableData.objects.order_by().values('dayOfTheWeek').distinct().values_list(
+                            'dayOfTheWeek')]
+        return weekDaysDict
 
     def get_providers(self):
-        return ["Chiny", "Korea Południowa", "Ukraina"]
+        countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+        return countries
 
     def get_data(self):
-        return [[30, 12, 5, 20, 22, 28],
-                [9, 17, 12, 6, 15],
-                [1, 2, 4, 3, 2]]
+        countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+        output_list = []
+
+        for c in countries:
+            bans_by_country = [int(e[0]) for e in
+                               LocationTableData.objects.filter(name=c[0]).values_list('banscount').order_by(
+                                   'dateTime')]
+            output_list.append(bans_by_country)
+        return output_list
 
 
 charts = TemplateView.as_view(template_name='charts.html')
@@ -80,6 +101,7 @@ class PieChartData(APIView):
             "colors": background_colors,
         }
         return Response(data)
+
 
 class PolarChartData(APIView):
     authentication_classes = []
@@ -155,8 +177,8 @@ def refresh_location(request):
                     locationData.code = code
                     locationData.name = name
                     locationData.dateTime = datetime.now()
+                    locationData.dayOfTheWeek = datetime.now().weekday()
                     print(datetime.now())
-
 
                     try:
                         int(banscount)
@@ -230,6 +252,3 @@ def refresh(request):
 
                     banData.save()
     return JsonResponse({"ok": True})
-
-
-

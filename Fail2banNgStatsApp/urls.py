@@ -7,6 +7,9 @@ from .readservers import ServerListReader
 from .bansfromdb import BansListReader
 from .locationsfromdb import LocationListReader
 
+
+on_startup()
+
 urlpatterns = [
                   url(r'^charts/json/$', views.charts_json, name='charts_json'),
                   url(r'^$', views.charts, name='charts'),
