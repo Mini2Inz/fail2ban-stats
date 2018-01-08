@@ -29,11 +29,21 @@ def on_startup():
     # LocationTableData.objects.filter(dateTime__gte=too_old).delete()
     return None
 
+
 from .models import BansTableData, LocationTableData
 from .statsreader import read_config, refresh_job
 
+
 class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
+        BTD = BansTableData()
+        BTD.bantime = - 1;
+        BTD.jail = "TEST";
+        BTD.recived_from_address="172.17.0.4"
+        BTD.recived_from_port=1234
+        BTD.timeofban= 45
+        BTD.save()
+
         weekDaysDict = [list(calendar.day_name)[int(e[0])] for e in
                         LocationTableData.objects.order_by().values('dayOfTheWeek').distinct().values_list(
                             'dayOfTheWeek')]
@@ -93,19 +103,12 @@ class PieChartData(APIView):
     permission_classes = []
 
     def get(self, request, format=None):
-
-        LTB=LocationTableData()
-        LTB.code='ELS'
-        LTB.name='Elswyr'
-        LTB.banscount=55
-        LTB.dayOfTheWeek=0
-        LTB.save()
-
         labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         default_items = []
         for c in countries:
-            bans_by_country_sum=LocationTableData.objects.filter(name=c[0]).aggregate(Sum('banscount'))['banscount__sum']
+            bans_by_country_sum = LocationTableData.objects.filter(name=c[0]).aggregate(Sum('banscount'))[
+                'banscount__sum']
             default_items.extend([bans_by_country_sum])
         background_colors = ["#2ecc71",
                              "#3498db",
@@ -208,7 +211,8 @@ def refresh_location(request):
 def refresh(request):
     config = read_config('stats.config')
     refresh_job(config, True)
-    return JsonResponse({'ok':True})
+    return JsonResponse({'ok': True})
+
 
 def old_refresh(request):
     HOST = '127.0.0.1'

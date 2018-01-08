@@ -4,7 +4,7 @@ import itertools
 
 class StatsReader():
     def __init__(self, config):
-        self._hosts = []
+        self.hosts = []
         self.getFail2banHosts(config)
 
     def get(self, request):
@@ -31,7 +31,7 @@ class StatsReader():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         tasks = []
-        for host in self._hosts:
+        for host in self.hosts:
             tasks.append(asyncio.ensure_future(_get(host)))
         loop.run_until_complete(asyncio.gather(*tasks))
         loop.close()
@@ -49,7 +49,7 @@ class StatsReader():
             print(hoststr)
             host = hoststr.split(':')
             return {'host':host[0], 'port':host[1]}
-        self._hosts = list(map(hoststr_to_dict, config['Fail2banHosts'].split('\n')))
+        self.hosts = list(map(hoststr_to_dict, config['Fail2banHosts'].split('\n')))
 
 
 class RefreshContext():

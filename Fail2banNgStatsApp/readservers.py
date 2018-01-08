@@ -8,6 +8,7 @@ from Fail2banNgStatsApp.models import BansTableData
 from .statsreader import read_config
 from .statsutils import StatsReader
 
+
 # class ServerListReader(APIView):
 #
 #     def get(self, request, format=None):
@@ -33,12 +34,10 @@ class ServerListReader(APIView):
         }
         config = read_config('stats.config')
         reader = StatsReader(config)
-        hosts = reader._hosts
+        hosts = reader.hosts
         for host in hosts:
-            host["bans"] = BansTableData.objects \
-                .filter(
-                    recived_from_address=host['host'], recived_from_port=host['port']) \
-                .count()
+            host["bans"] = BansTableData.objects.filter(recived_from_address=host['host'],
+                                                        recived_from_port=host['port']).count()
             jsonOut["dataset"].append(host)
 
         jsonOut["dataset"] = sorted(jsonOut["dataset"], key=lambda k: k['bans'], reverse=True)
