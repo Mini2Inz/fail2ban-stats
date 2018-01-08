@@ -142,7 +142,7 @@ class BarChartData(APIView):
         }]
         data = {
             "labels": labels,
-            "datasets": datasets
+            "datasets": datasets,
         }
         return Response(data)
 

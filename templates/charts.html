@@ -92,7 +92,21 @@
                 var ctx = document.getElementById("bar_chart");
                 var myChart = new Chart(ctx, {
                     type: 'bar',
-                    data: defaultData
+                    data: defaultData,
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    callback: function (value) {
+                                        if (value % 1 === 0) {
+                                            return value;
+                                        }
+                                    }
+                                }
+                            }]
+                        }
+                    }
                 })
             }
             ;
@@ -132,7 +146,7 @@
                 var port = dData[i].port;
                 var bans = dData[i].bans;
 
-                $("#generated").append("<tr><td>" + (i+1) + "</td><td>" + address + "</td><td>" + port + "</td><td>" + bans + "</td></tr>");
+                $("#generated").append("<tr><td>" + (i + 1) + "</td><td>" + address + "</td><td>" + port + "</td><td>" + bans + "</td></tr>");
 
             }
         }
