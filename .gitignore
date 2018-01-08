@@ -13,3 +13,4 @@ lib64
 .idea/
 *.sqlite3
 .vscode/
+--cached .idea/workspace.xml

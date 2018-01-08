@@ -36,14 +36,6 @@ from .statsreader import read_config, refresh_job
 
 class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
-        BTD = BansTableData()
-        BTD.bantime = - 1;
-        BTD.jail = "TEST";
-        BTD.recived_from_address="172.17.0.4"
-        BTD.recived_from_port=1234
-        BTD.timeofban= 45
-        BTD.save()
-
         weekDaysDict = [list(calendar.day_name)[int(e[0])] for e in
                         LocationTableData.objects.order_by().values('dayOfTheWeek').distinct().values_list(
                             'dayOfTheWeek')]
@@ -110,9 +102,11 @@ class PieChartData(APIView):
             bans_by_country_sum = LocationTableData.objects.filter(name=c[0]).aggregate(Sum('banscount'))[
                 'banscount__sum']
             default_items.extend([bans_by_country_sum])
-        background_colors = ["#2ecc71",
-                             "#3498db",
-                             "#95a5a6"]
+        background_colors=[]
+        for c in countries:
+            r = lambda: randint(0,255)
+            background_colors.extend(['#%02X%02X%02X' % (r(),r(),r())])
+        print(background_colors)
         data = {
             "labels": labels,
             "default": default_items,
