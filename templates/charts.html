@@ -128,12 +128,11 @@
             var len = dData.length;
             for (var i = 0; i < len; i++) {
 
-                var number = dData[i].Number;
-                var address = dData[i].Address;
-                var port = dData[i].Port;
-                var bans = dData[i].Bans;
+                var address = dData[i].host;
+                var port = dData[i].port;
+                var bans = dData[i].bans;
 
-                $("#generated").append("<tr><td>" + number + "</td><td>" + address + "</td><td>" + port + "</td><td>" + bans + "</td></tr>");
+                $("#generated").append("<tr><td>" + (i+1) + "</td><td>" + address + "</td><td>" + port + "</td><td>" + bans + "</td></tr>");
 
             }
         }

@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from Fail2banNgStatsApp.models import BansTableData
 
+from .statsreader import read_config
+from .statsutils import StatsReader
 
 # class ServerListReader(APIView):
 #
@@ -26,15 +28,18 @@ from Fail2banNgStatsApp.models import BansTableData
 
 class ServerListReader(APIView):
     def get(self, request, format=None):
-        csv.register_dialect("Dial", delimiter='/')
-        csvfile = open('ServerList.csv', 'r')
         jsonOut = {
             "dataset": []
         }
-        fieldnames = ("Number", "Address", "Port", "Bans")
-        reader = csv.DictReader(csvfile, fieldnames, dialect="Dial")
-        for row in reader:
-            row["Bans"] = BansTableData.objects.filter(recived_from_address=row["Address"],
-                                                       recived_from_port=row["Port"]).count()
-            jsonOut["dataset"].append(row)
+        config = read_config('stats.config')
+        reader = StatsReader(config)
+        hosts = reader._hosts
+        for host in hosts:
+            host["bans"] = BansTableData.objects \
+                .filter(
+                    recived_from_address=host['host'], recived_from_port=host['port']) \
+                .count()
+            jsonOut["dataset"].append(host)
+
+        jsonOut["dataset"] = sorted(jsonOut["dataset"], key=lambda k: k['bans'], reverse=True)
         return Response(jsonOut)
