@@ -1,22 +1,21 @@
 import json
 import socket
 import csv
-from django.shortcuts import render
-from django.http import JsonResponse
+from random import randint
 from flask import Flask
 from flask import Markup
-from flask import Flask
 from flask import render_template
-from random import randint
-from django.views.generic import TemplateView
 from django import http
-from chartjs.views.lines import BaseLineChartView
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.generic import TemplateView
+from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import BansTableData, LocationTableData
-from django.contrib.auth.models import User
+from chartjs.views.lines import BaseLineChartView
 
+from .models import BansTableData, LocationTableData
+from .statsreader import read_config, refresh_job
 
 class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
@@ -136,6 +135,11 @@ def refresh_location(request):
 
 
 def refresh(request):
+    config = read_config('stats.config')
+    refresh_job(config, True)
+    return JsonResponse({'ok':True})
+
+def old_refresh(request):
     HOST = '127.0.0.1'
     PORT = 7500
     csv.register_dialect("Dial", delimiter='/')

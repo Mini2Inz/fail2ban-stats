@@ -1,12 +1,13 @@
 import csv
 import asyncio
+import itertools
 
 class StatsReader():
     def __init__(self, config):
         self._hosts = []
         self.getFail2banHosts(config)
 
-    def get(self, request):        
+    def get(self, request):
         responses = []
         async def _get(host):
             print('get {} from {}'.format(request, str(host)))
@@ -21,11 +22,14 @@ class StatsReader():
                 await writer.drain()
                 print('sent ', request, str(host))
                 response = await reader.readuntil('\n\n'.encode())
-                responses.append(response)
-                print('from {}: {}'.format(str(host), str(response))) 
+                # "filter bool" removes empty strings
+                response = list(filter(bool, response.decode().split('\n')))
+                responses.append((host, response))
+                print('from {}: {}'.format(str(host), str(response)))
                 writer.close()
-
-        loop = asyncio.get_event_loop()
+                
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         tasks = []
         for host in self._hosts:
             tasks.append(asyncio.ensure_future(_get(host)))
@@ -34,7 +38,7 @@ class StatsReader():
 
         return responses
 
-    def getBans(self):        
+    def getBans(self):
         return self.get('BANS')
 
     def getLocations(self):
@@ -44,5 +48,21 @@ class StatsReader():
         def hoststr_to_dict(hoststr):
             print(hoststr)
             host = hoststr.split(':')
-            return {'host':host[0],'port':host[1]}
+            return {'host':host[0], 'port':host[1]}
         self._hosts = list(map(hoststr_to_dict, config['Fail2banHosts'].split('\n')))
+
+
+class RefreshContext():
+    def __init__(self, statsreader, savetodb=False):
+        self._reader = statsreader
+        self._savetodb = savetodb
+        if savetodb:
+            from .djangodb import StatsDatabase
+            self._database = StatsDatabase()
+
+    def refresh(self):
+        bans = self._reader.getBans()
+        if self._savetodb:
+            self._database.saveBans(bans)
+        # todo log in debug
+        print(bans)
