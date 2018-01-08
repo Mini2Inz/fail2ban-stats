@@ -16,7 +16,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from django.db.models import Sum
+from django.db.models import Sum, Min
 from rest_framework.response import Response
 
 from chartjs.views.lines import BaseLineChartView
@@ -106,7 +106,6 @@ class PieChartData(APIView):
         for c in countries:
             r = lambda: randint(0, 255)
             background_colors.extend(['#%02X%02X%02X' % (r(), r(), r())])
-        print(background_colors)
         data = {
             "labels": labels,
             "default": default_items,
@@ -120,17 +119,33 @@ class BarChartData(APIView):
     permission_classes = []
 
     def get(self, request, format=None):
-        labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
+        labels = [list(calendar.day_name)[int(e[0])] for e in
+                  LocationTableData.objects.order_by().values('dayOfTheWeek').distinct().values_list(
+                      'dayOfTheWeek')]
+        data = []
+        i = datetime.datetime.weekday(
+            LocationTableData.objects.order_by('dateTime').aggregate(Min('dateTime'))['dateTime__min'])
+        print(i)
+        for wd in labels:
+            print(i)
+            perday = [
+                LocationTableData.objects.order_by('dayOfTheWeek').filter(dayOfTheWeek=i).aggregate(Sum('banscount'))[
+                    'banscount__sum']]
+            data.extend(perday)
+            i += 1
+            i %= 7
+            print(perday)
         datasets = [{
             "label": "Number of bans per week day",
             "backgroundColor": ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
-            "data": [2478, 5267, 734, 784, 433]
+            "data": data
         }]
         data = {
             "labels": labels,
             "datasets": datasets
         }
         return Response(data)
+
 
 class PolarChartData(APIView):
     authentication_classes = []
@@ -161,9 +176,6 @@ class PolarChartData(APIView):
         }
 
         return Response(data)
-
-
-
 
 
 def refresh_location(request):
