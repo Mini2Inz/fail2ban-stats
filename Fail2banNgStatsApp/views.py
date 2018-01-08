@@ -2,6 +2,11 @@ import json
 import socket
 import csv
 from random import randint
+import calendar
+import locale
+import datetime
+from django.shortcuts import render
+from django.http import JsonResponse
 from flask import Flask
 from flask import Markup
 from flask import render_template
@@ -11,23 +16,43 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
+from django.db.models import Sum
 from rest_framework.response import Response
+
 from chartjs.views.lines import BaseLineChartView
+
+locale.setlocale(locale.LC_ALL, 'pl_PL')
+
+
+def on_startup():
+    # too_old = datetime.datetime.today() - datetime.timedelta(days=7)
+    # LocationTableData.objects.filter(dateTime__gte=too_old).delete()
+    return None
 
 from .models import BansTableData, LocationTableData
 from .statsreader import read_config, refresh_job
 
 class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
-        return ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
+        weekDaysDict = [list(calendar.day_name)[int(e[0])] for e in
+                        LocationTableData.objects.order_by().values('dayOfTheWeek').distinct().values_list(
+                            'dayOfTheWeek')]
+        return weekDaysDict
 
     def get_providers(self):
-        return ["Chiny", "Korea Południowa", "Ukraina"]
+        countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+        return countries
 
     def get_data(self):
-        return [[30, 12, 5, 20, 22, 28],
-                [9, 17, 12, 6, 15],
-                [1, 2, 4, 3, 2]]
+        countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+        output_list = []
+
+        for c in countries:
+            bans_by_country = [int(e[0]) for e in
+                               LocationTableData.objects.filter(name=c[0]).values_list('banscount').order_by(
+                                   'dateTime')]
+            output_list.append(bans_by_country)
+        return output_list
 
 
 charts = TemplateView.as_view(template_name='charts.html')
@@ -68,8 +93,20 @@ class PieChartData(APIView):
     permission_classes = []
 
     def get(self, request, format=None):
-        labels = ["Chiny", "Korea Południowa", "Ukraina"]
-        default_items = [23, 3, 12]
+
+        LTB=LocationTableData()
+        LTB.code='ELS'
+        LTB.name='Elswyr'
+        LTB.banscount=55
+        LTB.dayOfTheWeek=0
+        LTB.save()
+
+        labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+        countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+        default_items = []
+        for c in countries:
+            bans_by_country_sum=LocationTableData.objects.filter(name=c[0]).aggregate(Sum('banscount'))['banscount__sum']
+            default_items.extend([bans_by_country_sum])
         background_colors = ["#2ecc71",
                              "#3498db",
                              "#95a5a6"]
@@ -78,6 +115,37 @@ class PieChartData(APIView):
             "default": default_items,
             "colors": background_colors,
         }
+        return Response(data)
+
+
+class PolarChartData(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+        labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
+        datasets = [{
+            "label": 'Ukraina',
+            "backgroundColor": "rgba(153,255,51,0.4)",
+            "borderColor": "rgba(153,255,51,1)",
+            "data": [3, 7, 8, 9, 4],
+        }, {
+            "label": 'Chiny',
+            "backgroundColor": "rgba(255,47,30,0.4)",
+            "borderColor": "rgba(255,153,0,1)",
+            "data": [12, 14, 11, 11, 10]
+        }, {
+            "label": 'Korea Południowa',
+            "backgroundColor": "rgba(100,30,250,0.4)",
+            "borderColor": "rgba(50,30,250,1)",
+            "data": [9, 11, 7, 8, 6]
+        }]
+
+        data = {
+            "labels": labels,
+            "datasets": datasets
+        }
+
         return Response(data)
 
 
@@ -105,7 +173,7 @@ def refresh_location(request):
             with s:
                 print('Connected by', HOST)
                 while True:
-                    data = s.recv(1024)
+                    data = s.recv(5024)
                     if data.decode() == '\n': break
                     # s.sendall(data)
                     print(data.decode())
@@ -123,9 +191,12 @@ def refresh_location(request):
                     locationData = LocationTableData()
                     locationData.code = code
                     locationData.name = name
+                    locationData.dateTime = datetime.datetime.now()
+                    locationData.dayOfTheWeek = datetime.datetime.now().weekday()
+                    print(datetime.datetime.now())
 
                     try:
-                        int(locationData)
+                        int(banscount)
                         locationData.banscount = int(banscount)
                     except ValueError:
                         locationData.banscount = -1
@@ -201,34 +272,3 @@ def old_refresh(request):
 
                     banData.save()
     return JsonResponse({"ok": True})
-
-
-class PolarChartData(APIView):
-    authentication_classes = []
-    permission_classes = []
-
-    def get(self, request, format=None):
-        labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
-        datasets = [{
-            "label": 'Ukraina',
-            "backgroundColor": "rgba(153,255,51,0.4)",
-            "borderColor": "rgba(153,255,51,1)",
-            "data": [3, 7, 8, 9, 4],
-        }, {
-            "label": 'Chiny',
-            "backgroundColor": "rgba(255,47,30,0.4)",
-            "borderColor": "rgba(255,153,0,1)",
-            "data": [12, 14, 11, 11, 10]
-        }, {
-            "label": 'Korea Południowa',
-            "backgroundColor": "rgba(100,30,250,0.4)",
-            "borderColor": "rgba(50,30,250,1)",
-            "data": [9, 11, 7, 8, 6]
-        }]
-
-        data = {
-            "labels": labels,
-            "datasets": datasets
-        }
-
-        return Response(data)
