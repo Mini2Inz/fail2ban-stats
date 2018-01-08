@@ -102,10 +102,10 @@ class PieChartData(APIView):
             bans_by_country_sum = LocationTableData.objects.filter(name=c[0]).aggregate(Sum('banscount'))[
                 'banscount__sum']
             default_items.extend([bans_by_country_sum])
-        background_colors=[]
+        background_colors = []
         for c in countries:
-            r = lambda: randint(0,255)
-            background_colors.extend(['#%02X%02X%02X' % (r(),r(),r())])
+            r = lambda: randint(0, 255)
+            background_colors.extend(['#%02X%02X%02X' % (r(), r(), r())])
         print(background_colors)
         data = {
             "labels": labels,
@@ -114,6 +114,23 @@ class PieChartData(APIView):
         }
         return Response(data)
 
+
+class BarChartData(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+        labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
+        datasets = [{
+            "label": "Number of bans per week day",
+            "backgroundColor": ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+            "data": [2478, 5267, 734, 784, 433]
+        }]
+        data = {
+            "labels": labels,
+            "datasets": datasets
+        }
+        return Response(data)
 
 class PolarChartData(APIView):
     authentication_classes = []
@@ -144,6 +161,9 @@ class PolarChartData(APIView):
         }
 
         return Response(data)
+
+
+
 
 
 def refresh_location(request):
