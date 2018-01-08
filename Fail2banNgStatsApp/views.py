@@ -21,7 +21,7 @@ from rest_framework.response import Response
 
 from chartjs.views.lines import BaseLineChartView
 
-locale.setlocale(locale.LC_ALL, 'pl_PL')
+locale.setlocale(locale.LC_ALL, 'pl_PL.utf8')
 
 
 def on_startup():
