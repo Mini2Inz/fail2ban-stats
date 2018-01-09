@@ -6,12 +6,12 @@ header, footer {
     text-align: center;
 }
 
-chart {
-    float: left;
-    max-width: 500px;
-    margin: 0;
-    padding: 1em;
-}
+/*chart {*/
+    /*float: left;*/
+    /*max-width: 500px;*/
+    /*margin: 0;*/
+    /*padding: 1em;*/
+/*}*/
 
 .flex-container {
     display: flex;

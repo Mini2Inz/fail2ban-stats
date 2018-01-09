@@ -14,7 +14,7 @@
             <script src="{% static 'js/excanvas.js' %}"></script>
         <![endif]-->
     <link rel="stylesheet" href="{% static 'css/chart_styles.css' %}">
-    <link rel="stylesheet_flex" href="{% static 'css/flexboxgrid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flexboxgrid.min.css' %}">
 </head>
 <body>
 
@@ -22,146 +22,148 @@
     <h1>Fail2ban-ng Statystyki</h1>
 </header>
 {% block jquery %}
-    <div class="flex-container">
 
-        <canvas id="line_chart"></canvas>
-        <script type="text/javascript">
-            $.get('{% url "charts_json" %}', function (data) {
-                var ctx = $("#line_chart").get(0).getContext("2d");
-                new Chart(ctx, {
-                    type: 'line', data: data
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <h3>Dystrybucja krajów na dany dzień tygodnia</h3>
+            <canvas width="100" height="100"  id="line_chart"></canvas>
+            <script type="text/javascript">
+                $.get('{% url "charts_json" %}', function (data) {
+                    var ctx = $("#line_chart").get(0).getContext("2d");
+                    new Chart(ctx, {
+                        type: 'line', data: data
+                    });
                 });
-            });
-        </script>
-
-        </canvas>
-        <canvas id="pie_chart"></canvas>
-        <script type="text/javascript">
-            var endpoint = '/api/chart/data/pie'
-            var defaultData = []
-            var labels = [];
-            var colors = [];
-            $.ajax({
-                method: "GET",
-                url: endpoint,
-                success: function (data) {
-                    labels = data.labels
-                    defaultData = data.default
-                    colors = data.colors
-                    setChartPie()
-                },
-                error: function (error_data) {
-                    console.log("error")
-                    console.log(error_data)
-                }
-            })
-            function setChartPie() {
-                var ctx = document.getElementById("pie_chart");
-                var myChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            backgroundColor: colors,
-                            data: defaultData
-                        }]
+            </script>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            </canvas>
+            <h3>Dystrybucja krajów w widoku tygodniowym</h3>
+            <canvas id="pie_chart"></canvas>
+            <script type="text/javascript">
+                var endpoint = '/api/chart/data/pie'
+                var defaultData = []
+                var labels = [];
+                var colors = [];
+                $.ajax({
+                    method: "GET",
+                    url: endpoint,
+                    success: function (data) {
+                        labels = data.labels
+                        defaultData = data.default
+                        colors = data.colors
+                        setChartPie()
+                    },
+                    error: function (error_data) {
+                        console.log("error")
+                        console.log(error_data)
                     }
                 })
-            }
-            ;
-
-        </script>
-        </canvas>
-
-        <canvas id="bar_chart"></canvas>
-        <script type="text/javascript">
-            var endpoint = '/api/chart/data/bar'
-            var defaultData = [];
-            $.ajax({
-                method: "GET",
-                url: endpoint,
-                success: function (data) {
-                    defaultData = data
-                    setChart()
-                },
-                error: function (error_data) {
-                    console.log("error")
-                    console.log(error_data)
-                }
-            })
-            function setChart() {
-                var ctx = document.getElementById("bar_chart");
-                var myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: defaultData,
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true,
-                                    callback: function (value) {
-                                        if (value % 1 === 0) {
-                                            return value;
-                                        }
-                                    }
-                                }
+                function setChartPie() {
+                    var ctx = document.getElementById("pie_chart");
+                    var myChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                backgroundColor: colors,
+                                data: defaultData
                             }]
                         }
-                    }
-                })
-            }
-            ;
-
-
-        </script>
-
-
-    </div>
-
-
-
-    <div class="flex-container">
-        <canvas id="pie_chart_jails"></canvas>
-        <script type="text/javascript">
-            var endpointjb = '/api/chart/data/jailsbans'
-            var defaultDatajb = []
-            var labelsjb = [];
-            var colorsjb = [];
-            $.ajax({
-                method: "GET",
-                url: endpointjb,
-                success: function (data) {
-                    labelsjb = data.labels
-                    defaultDatajb = data.default
-                    colorsjb = data.colors
-                    setChartPieJB()
-                },
-                error: function (error_data) {
-                    console.log("error")
-                    console.log(error_data)
+                    })
                 }
-            })
-            function setChartPieJB() {
-                var ctxjb = document.getElementById("pie_chart_jails");
-                var myChartjb = new Chart(ctxjb, {
-                    type: 'pie',
-                    data: {
-                        labels: labelsjb,
-                        datasets: [{
-                            backgroundColor: colorsjb,
-                            data: defaultDatajb
-                        }]
+                ;
+
+            </script>
+            </canvas>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <h3>Ilość zablokowanych adresów w widoku tygodniowym</h3>
+            <canvas width="100" height="100"  id="bar_chart"></canvas>
+            <script type="text/javascript">
+                var endpoint = '/api/chart/data/bar'
+                var defaultData = [];
+                $.ajax({
+                    method: "GET",
+                    url: endpoint,
+                    success: function (data) {
+                        defaultData = data
+                        setChart()
+                    },
+                    error: function (error_data) {
+                        console.log("error")
+                        console.log(error_data)
                     }
                 })
-            }
-            ;
+                function setChart() {
+                    var ctx = document.getElementById("bar_chart");
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: defaultData,
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function (value) {
+                                            if (value % 1 === 0) {
+                                                return value;
+                                            }
+                                        }
+                                    }
+                                }]
+                            }
+                        }
+                    })
+                }
+                ;
 
-        </script>
+
+            </script>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <h3>Podział na więzienia w widoku tygodniowym</h3>
+            <canvas id="pie_chart_jails"></canvas>
+            <script type="text/javascript">
+                var endpointjb = '/api/chart/data/jailsbans'
+                var defaultDatajb = []
+                var labelsjb = [];
+                var colorsjb = [];
+                $.ajax({
+                    method: "GET",
+                    url: endpointjb,
+                    success: function (data) {
+                        labelsjb = data.labels
+                        defaultDatajb = data.default
+                        colorsjb = data.colors
+                        setChartPieJB()
+                    },
+                    error: function (error_data) {
+                        console.log("error")
+                        console.log(error_data)
+                    }
+                })
+                function setChartPieJB() {
+                    var ctxjb = document.getElementById("pie_chart_jails");
+                    var myChartjb = new Chart(ctxjb, {
+                        type: 'pie',
+                        data: {
+                            labels: labelsjb,
+                            datasets: [{
+                                backgroundColor: colorsjb,
+                                data: defaultDatajb
+                            }]
+                        }
+                    })
+                }
+                ;
+
+            </script>
+        </div>
     </div>
 
 
-
-    <th>Ranking</th>
+    <h2>Ranking</h2>
     <table id="generated">
         <tr>
             <th>Rank</th>
