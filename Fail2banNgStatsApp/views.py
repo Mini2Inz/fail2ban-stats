@@ -31,8 +31,8 @@ def on_startup():
 
 
 from .models import BansTableData, LocationTableData
-from .statsreader import read_config, refresh_job
-
+from .statsreader import read_config
+from .statsutils import StatsReader, RefreshContext
 
 class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
@@ -179,6 +179,14 @@ class PolarChartData(APIView):
 
 
 def refresh_location(request):
+    config = read_config('stats.config')
+    reader = StatsReader(config)
+    ctx = RefreshContext(reader, True)
+    ctx.refreshLocations()
+    return JsonResponse({'ok': True})
+
+
+def old_refresh_location(request):
     HOST = '127.0.0.1'
     PORT = 7500
     csv.register_dialect("Dial", delimiter='/')
@@ -236,7 +244,9 @@ def refresh_location(request):
 
 def refresh(request):
     config = read_config('stats.config')
-    refresh_job(config, True)
+    reader = StatsReader(config)
+    ctx = RefreshContext(reader, True)
+    ctx.refreshBans()
     return JsonResponse({'ok': True})
 
 

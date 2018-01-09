@@ -13,21 +13,31 @@ class StatsReader():
             print('get {} from {}'.format(request, str(host)))
             try:
                 reader, writer = await asyncio.open_connection(**host)
+                connected = True
             except:
                 print('Failed to connect ', str(host))
-            else:
-                print('connected ', str(host))
-                msg = (request+'\n').encode()
-                writer.write(msg)
-                await writer.drain()
-                print('sent ', request, str(host))
-                response = await reader.readuntil('\n\n'.encode())
-                # "filter bool" removes empty strings
-                response = list(filter(bool, response.decode().split('\n')))
-                responses.append((host, response))
-                print('from {}: {}'.format(str(host), str(response)))
+                connected = False
+            
+            if not connected: return
+
+            print('connected ', str(host))
+            msg = (request+'\n').encode()
+            writer.write(msg)
+            await writer.drain()
+            print('sent ', request, str(host))
+            firstbyte = await reader.read(1)
+            if firstbyte == b'\n':
+                print("No data from ", str(host))
                 writer.close()
-                
+                return
+
+            response = await reader.readuntil('\n\n'.encode())
+            response = firstbyte.decode() + response.decode()
+            # "filter bool" removes empty strings
+            response = list(filter(bool, response.split('\n')))
+            responses.append((host, response))
+            print('from {}: {}'.format(str(host), str(response)))
+
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         tasks = []
@@ -54,15 +64,24 @@ class StatsReader():
 
 class RefreshContext():
     def __init__(self, statsreader, savetodb=False):
-        self._reader = statsreader
-        self._savetodb = savetodb
+        self.__reader = statsreader
+        self.__savetodb = savetodb
         if savetodb:
             from .djangodb import StatsDatabase
-            self._database = StatsDatabase()
+            self.__database = StatsDatabase()
 
-    def refresh(self):
-        bans = self._reader.getBans()
-        if self._savetodb:
-            self._database.saveBans(bans)
-        # todo log in debug
+    def refreshBans(self):
+        bans = self.__reader.getBans()
+        if bans and self.__savetodb:
+            self.__database.saveBans(bans)
         print(bans)
+
+    def refreshLocations(self):
+        locations = self.__reader.getLocations()
+        if locations and self.__savetodb:
+            self.__database.saveLocations(locations)
+        print(locations)
+
+    def refresh_all(self):
+        self.refreshBans()
+        self.refreshLocations()

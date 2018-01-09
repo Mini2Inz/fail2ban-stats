@@ -1,3 +1,5 @@
+from datetime import datetime, date
+
 def int_try_parse(string, default = 0):
     try:
         return int(string)
@@ -9,7 +11,7 @@ def try_get(list, idx, length = -1, default = None):
     return list[idx] if idx < length else default
 
 class StatsDatabase():
-    
+
     @staticmethod
     def initDjango():
         import django
@@ -20,27 +22,57 @@ class StatsDatabase():
             )
         django.setup()
 
+    def __save(self, data, data_handler):
+        for data_tuple in data:
+            host, data_list = data_tuple
+            for data_item in data_list:
+                parsed_data = data_item.split(',')
+                datalen = len(parsed_data)
+                if datalen < 2:
+                    #todo log
+                    continue
+                data_handler(host, parsed_data, datalen)
+
     def saveBans(self, bans):
         from .models import BansTableData
-        for bantuple in bans:
-            host, banslist = bantuple
-            for rawban in banslist:
-                ban_data = rawban.split(',')
-                datalen = len(ban_data)
-                if datalen < 2: 
-                    # todo log
-                    continue
+        def saveBan(host, ban_data, datalen):
+            ban = BansTableData()
+            ban.jail = ban_data[0]
+            ban.ip = ban_data[1]
+            if datalen > 2: 
+                ban.timeofban = int_try_parse(ban_data[2])
+            if datalen > 3:
+                ban.bantime = int_try_parse(ban_data[3])
+            ban.recived_from_address = host['host']
+            ban.recived_from_port = host['port']
+            ban.save()
 
-                ban = BansTableData()
-                ban.jail = ban_data[0]
-                ban.ip = ban_data[1]
-                if datalen > 2: 
-                    ban.timeofban = int_try_parse(ban_data[2])
-                if datalen > 3:
-                    ban.bantime = int_try_parse(ban_data[3])
-                ban.recived_from_address = host['host']
-                ban.recived_from_port = host['port']
-                ban.save()
+        self.__save(bans, saveBan)
 
-    def saveLocations(self, locations):
-        pass
+
+    def saveLocations(self, locationsData):
+        from .models import LocationTableData
+        
+        today = date.today()
+        today = datetime(today.year, today.month, today.day)
+
+        LocationTableData.objects.filter(dateTime=today).delete()
+
+        def saveLoc(host, loc_data, datalen):
+            loc = LocationTableData.objects \
+                .filter(code=loc_data[0], dateTime=today) \
+                .first()
+            if loc is None:
+                loc = LocationTableData()
+                loc.code = loc_data[0]
+                loc.name = loc_data[1]
+                loc.dateTime = today
+                loc.dayOfTheWeek = today.weekday()
+                loc.banscount = 0
+
+            if datalen >= 3:
+                loc.banscount += int(loc_data[2])                
+            loc.save()
+
+        self.__save(locationsData, saveLoc)
+
