@@ -102,10 +102,10 @@ class PieChartData(APIView):
             bans_by_country_sum = LocationTableData.objects.filter(name=c[0]).aggregate(Sum('banscount'))[
                 'banscount__sum']
             default_items.extend([bans_by_country_sum])
-        background_colors = []
-        for c in countries:
-            r = lambda: randint(0, 255)
-            background_colors.extend(['#%02X%02X%02X' % (r(), r(), r())])
+        background_colors = ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#2a5a63", "#e00813"]
+        # for c in countries:
+        #     r = lambda: randint(0, 255)
+        #     background_colors.extend(['#%02X%02X%02X' % (r(), r(), r())])
         data = {
             "labels": labels,
             "default": default_items,
@@ -137,7 +137,7 @@ class BarChartData(APIView):
             print(perday)
         datasets = [{
             "label": "Number of bans per week day",
-            "backgroundColor": ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+            "backgroundColor": ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#2a5a63", "#e00813"],
             "data": data
         }]
         data = {
