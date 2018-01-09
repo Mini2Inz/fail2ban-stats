@@ -18,8 +18,11 @@ from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from django.db.models import Sum, Min
 from rest_framework.response import Response
-
+from django.utils import timezone
 from chartjs.views.lines import BaseLineChartView
+from .models import BansTableData, LocationTableData
+from .statsreader import read_config
+from .statsutils import StatsReader, RefreshContext
 
 locale.setlocale(locale.LC_ALL, 'pl_PL.utf8')
 
@@ -29,10 +32,6 @@ def on_startup():
     # LocationTableData.objects.filter(dateTime__gte=too_old).delete()
     return None
 
-
-from .models import BansTableData, LocationTableData
-from .statsreader import read_config
-from .statsutils import StatsReader, RefreshContext
 
 class ChartsJSONView(BaseLineChartView):
     def get_labels(self):
@@ -103,6 +102,30 @@ class PieChartData(APIView):
                 'banscount__sum']
             default_items.extend([bans_by_country_sum])
         background_colors = ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#2a5a63", "#e00813"]
+        # for c in countries:
+        #     r = lambda: randint(0, 255)
+        #     background_colors.extend(['#%02X%02X%02X' % (r(), r(), r())])
+        data = {
+            "labels": labels,
+            "default": default_items,
+            "colors": background_colors,
+        }
+        return Response(data)
+
+
+class PieChartBans(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+        # labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+        labels = [e['jail'] for e in BansTableData.objects.order_by().values('jail').distinct()]
+        print(labels)
+        default_items = []
+        for l in labels:
+            jails_count = [BansTableData.objects.filter(jail=l).count()]
+            default_items.extend([jails_count])
+        background_colors = ["#2a5a63", "#e00813", "#c45850", "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9"]
         # for c in countries:
         #     r = lambda: randint(0, 255)
         #     background_colors.extend(['#%02X%02X%02X' % (r(), r(), r())])

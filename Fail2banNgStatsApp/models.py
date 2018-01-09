@@ -27,7 +27,7 @@ class BansTableData(models.Model):
 class LocationTableData(models.Model):
     code = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
-    dateTime = models.DateTimeField(default=datetime.now, blank=True)
+    dateTime = models.DateTimeField(default=timezone.now, blank=True)
     dayOfTheWeek = models.CharField(max_length=20, default='UNKNOWN')
     banscount = models.IntegerField()
 
