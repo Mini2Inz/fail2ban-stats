@@ -5,7 +5,7 @@ import itertools
 class StatsReader():
     def __init__(self, config):
         self.hosts = []
-        self.getFail2banHosts(config)
+        self.update_hosts(config)
 
     def get(self, request):
         responses = []
@@ -54,7 +54,7 @@ class StatsReader():
     def getLocations(self):
         return self.get('LOCATIONS')
 
-    def getFail2banHosts(self, config):
+    def update_hosts(self, config):
         def hoststr_to_dict(hoststr):
             print(hoststr)
             host = hoststr.split(':')
