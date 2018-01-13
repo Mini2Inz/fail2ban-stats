@@ -26,15 +26,16 @@ def read_args():
                         default='')
     return parser.parse_args()
 
-def read_config(config_path):
+def read_config(config_path=CONFIG_PATH):
     """Read configuration file"""
     config = ConfigParser()
     if not config_path:
         raise Exception('Config path empty')
 
     if config_path[0] != '/':
-        config_path = os.path.realpath(__file__).replace(__name__, config_path)
+        config_path = os.path.realpath(__file__).replace("statsreader.py", config_path)
 
+    print("Config: ", config_path)
     readfiles = config.read(config_path)
     if readfiles:
         return config['config']
