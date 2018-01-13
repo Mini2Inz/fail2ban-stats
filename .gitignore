@@ -11,6 +11,5 @@ lib64
 *.pyc
 *.pyo
 .idea/
-*.sqlite3
 .vscode/
 --cached .idea/workspace.xml
