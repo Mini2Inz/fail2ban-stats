@@ -1,3 +1,5 @@
+import sys
+
 from django.apps import AppConfig
 from django.conf import settings
 
@@ -7,7 +9,7 @@ class Fail2banNgStatsAppConfig(AppConfig):
     name = 'Fail2banNgStatsApp'
 
     def ready(self):
-        if settings.REFRESH_ON:
+        if settings.REFRESH_ON or not self.__server_starting():
             return
 
         self.logger = get_logger('Fail2banNgStatsAppConfig')
@@ -21,6 +23,11 @@ class Fail2banNgStatsAppConfig(AppConfig):
                 self.logger.warning('Failed to run shceduled refresh')
                 self.logger.debug(str(e))
             lock.release()
+
+    def __server_starting(self):
+        if len(sys.argv) >= 2:
+            return sys.argv[1] == 'runserver'
+        return False
 
     def __refresh_thread_job(self, exit_event):
         from .statsreader import read_config, run_scheduled_refresh
