@@ -34,3 +34,9 @@ class LocationTableData(models.Model):
     class Meta:
         db_table = "locationtabledata"
 
+
+class LastRefreshTableData(models.Model):
+    time = models.IntegerField()
+
+    class Meta:
+        db_table = "lastrefreshtabledata"

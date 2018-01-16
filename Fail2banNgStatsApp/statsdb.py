@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from .statsutils import get_logger
 
 def int_try_parse(string, default = 0):
     try:
@@ -11,6 +12,8 @@ def try_get(list, idx, length = -1, default = None):
     return list[idx] if idx < length else default
 
 class StatsDatabase():
+    def __init__(self):
+        self.logger = get_logger(__name__)
 
     @staticmethod
     def initDjango():
@@ -29,8 +32,7 @@ class StatsDatabase():
                 parsed_data = data_item.split(',')
                 datalen = len(parsed_data)
                 if datalen < 2:
-                    #todo log
-                    continue
+                    self.logger.warning('Not enough data: {}'.format(str(data_item)))
                 data_handler(host, parsed_data, datalen)
 
     def saveBans(self, bans):
@@ -71,7 +73,7 @@ class StatsDatabase():
                 loc.banscount = 0
 
             if datalen >= 3:
-                loc.banscount += int(loc_data[2])                
+                loc.banscount += int(loc_data[2])
             loc.save()
 
         self.__save(locationsData, saveLoc)

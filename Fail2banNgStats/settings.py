@@ -11,7 +11,12 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
 import os
+import threading
 
+# used to synchronize on Fail2banNgStatsApp startup
+REFRESH_LOCK = threading.Lock()
+REFRESH_ON = False
+REFRESH_CONFIG = 'stats.config'
 # Celery settings
 
 CELERY_BROKER_URL = 'amqp://localhost'
@@ -48,7 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'django_static_jquery',
-    'Fail2banNgStatsApp',
+    'Fail2banNgStatsApp.apps.Fail2banNgStatsAppConfig',
     'static',
     'rest_framework',
     'django_tables2',
@@ -70,8 +75,7 @@ ROOT_URLCONF = 'Fail2banNgStats.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,3 +144,33 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     '/static/',
 ]
+ 
+# https://docs.djangoproject.com/en/2.0/topics/logging/
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'standard': {
+#             'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'level': 'DEBUG',
+#             'formatter': 'standard'
+#         }
+#         # 'file': {
+#         #     'level': 'DEBUG',
+#         #     'class': 'logging.FileHandler',
+#         #     'filename': '/path/to/django/debug.log',
+#         # },
+#     },
+#     'loggers': {
+#         '': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True
+#         }
+#     }
+# }
