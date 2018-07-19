@@ -1,7 +1,7 @@
-FROM python:3.6.6-alpine
+FROM python:3.6.6
 
 # Generate Polish locale
-#RUN apt-get update && apt-get install -y locales
+RUN apt-get update && apt-get install -y locales
 RUN echo pl_PL.UTF-8 UTF-8 >> /etc/locale.gen && locale-gen
 
 COPY . /fail2ban-stats
