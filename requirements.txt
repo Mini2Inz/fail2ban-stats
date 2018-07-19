@@ -17,11 +17,12 @@ itsdangerous==0.24
 Jinja2==2.10
 kombu==4.1.0
 MarkupSafe==1.0
+pkg-resources==0.0.0
 python-dateutil==2.6.1
 pytz==2017.3
 redis==2.10.3
-six==1.11.0
 schedule==0.5.0
+six==1.11.0
 SQLAlchemy==1.2.0
 vine==1.1.4
 Werkzeug==0.13
