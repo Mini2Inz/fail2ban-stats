@@ -9,19 +9,19 @@ from .locationsfromdb import LocationListReader
 
 on_startup()
 
-urlpatterns = [
+urlpatterns = urlpatterns = [
                   url(r'^charts/json/$', views.charts_json, name='charts_json'),
                   url(r'^$', views.charts, name='charts'),
                   url(r'^control$', views.control, name='index'),
                   url(r'^api/country/week$', PieChartData.as_view()),
                   url(r'^api/chart/data/polar$', PolarChartData.as_view()),
                   url(r'^api/chart/data/bar$', BarChartData.as_view()),
-                  url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
-                  url(r'^api/chart/data/jailsbans', PieChartBans.as_view()),
+                  url(r'^/api/servers$', ServerListReader.as_view()),
+                  url(r'^/api/jailsbans/week$', PieChartBans.as_view()),
                   url(r'^refresh$', views.refresh, name='refresh'),
                   url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
                   url(r'^api/chart/data/bans$', BansListReader.as_view()),
                   url(r'^api/chart/data/locations$', LocationListReader.as_view()),
                   url(r'^refresh_location$', views.refresh_location, name='refresh_location'),
 
-              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
