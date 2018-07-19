@@ -7,8 +7,8 @@ RUN echo pl_PL.UTF-8 UTF-8 >> /etc/locale.gen && locale-gen
 COPY . /fail2ban-stats
 WORKDIR /fail2ban-stats
 RUN pip install -r requirements.txt
-#RUN python3 manage.py makemigrations
-#RUN python3 manage.py migrate
+RUN python manage.py makemigrations
+RUN python manage.py migrate
 
 EXPOSE 8000
 
