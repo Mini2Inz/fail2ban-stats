@@ -26,7 +26,7 @@ from .statsutils import StatsReader
 #         return Response(data)
 
 
-
+# ServerListReader
 class ServerListReader(APIView):
     def get(self, request, format=None):
         jsonOut = {

@@ -89,6 +89,8 @@ class JSONView(JSONResponseMixin, TemplateView):
     pass
 
 
+# API/COUNTRY
+
 class PieChartData(APIView):
     authentication_classes = []
     permission_classes = []
@@ -112,7 +114,7 @@ class PieChartData(APIView):
         }
         return Response(data)
 
-
+# API/JAILBANS
 class PieChartBans(APIView):
     authentication_classes = []
     permission_classes = []
