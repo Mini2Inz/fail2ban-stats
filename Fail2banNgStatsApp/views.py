@@ -24,6 +24,8 @@ from .models import BansTableData, LocationTableData
 from .statsreader import read_config
 from .statsutils import StatsReader, RefreshContext
 from rest_framework import generics
+from .serializers import LocationTableDataSerializer
+from .serializers import BansTableDataSerializer
 
 locale.setlocale(locale.LC_ALL, 'pl_PL.utf8')
 
@@ -102,8 +104,9 @@ class PieChartData(generics.ListAPIView):
     # locationTableData.banscount = 5
     # locationTableData.dayOfTheWeek = 2
     # locationTableData.save()
+    serializer_class = LocationTableDataSerializer
 
-    def get(self, request, format=None):
+    def get_queryset(self):
         labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         default_items = []
@@ -127,8 +130,8 @@ class PieChartData(generics.ListAPIView):
 class PieChartBans(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
-
-    def get(self, request, format=None):
+    serializer_class = BansTableDataSerializer
+    def get_queryset(self):
         # labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         labels = [e['jail'] for e in BansTableData.objects.order_by().values('jail').distinct()]
         print(labels)
@@ -145,14 +148,15 @@ class PieChartBans(generics.ListAPIView):
             "default": default_items,
             "colors": background_colors,
         }
-        return Response(data)
+        return data
 
 
 class BarChartData(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request, format=None):
+    serializer_class = BansTableDataSerializer
+    def get_queryset(self):
         labels = [list(calendar.day_name)[int(e[0])] for e in
                   LocationTableData.objects.order_by().values('dayOfTheWeek').distinct().values_list(
                       'dayOfTheWeek')]
@@ -178,14 +182,14 @@ class BarChartData(generics.ListAPIView):
             "labels": labels,
             "datasets": datasets,
         }
-        return Response(data)
+        return data
 
 
 class PolarChartData(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request, format=None):
+    def get_queryset(self):
         labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
         datasets = [{
             "label": 'Ukraina',
@@ -209,7 +213,7 @@ class PolarChartData(generics.ListAPIView):
             "datasets": datasets
         }
 
-        return Response(data)
+        return data
 
 
 def refresh_location(request):

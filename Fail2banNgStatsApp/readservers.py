@@ -4,10 +4,11 @@ import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from Fail2banNgStatsApp.models import BansTableData
+from rest_framework import generics
 
 from .statsreader import read_config
 from .statsutils import StatsReader
-
+from .serializers import BansTableDataSerializer
 
 # class ServerListReader(APIView):
 #
@@ -27,8 +28,9 @@ from .statsutils import StatsReader
 
 
 # ServerListReader
-class ServerListReader(APIView):
-    def get(self, request, format=None):
+class ServerListReader(generics.ListAPIView):
+    serializer_class = BansTableDataSerializer
+    def get_queryset(self):
         jsonOut = {
             "dataset": []
         }
