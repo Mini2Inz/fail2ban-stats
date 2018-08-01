@@ -23,6 +23,7 @@ from chartjs.views.lines import BaseLineChartView
 from .models import BansTableData, LocationTableData
 from .statsreader import read_config
 from .statsutils import StatsReader, RefreshContext
+from rest_framework import generics
 
 locale.setlocale(locale.LC_ALL, 'pl_PL.utf8')
 
@@ -91,9 +92,16 @@ class JSONView(JSONResponseMixin, TemplateView):
 
 # API/COUNTRY
 
-class PieChartData(APIView):
+class PieChartData(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
+
+    # locationTableData = LocationTableData()
+    # locationTableData.code = "POL"
+    # locationTableData.dateTime = "2018-08-01T20:00+00:00"
+    # locationTableData.banscount = 5
+    # locationTableData.dayOfTheWeek = 2
+    # locationTableData.save()
 
     def get(self, request, format=None):
         labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
@@ -115,7 +123,8 @@ class PieChartData(APIView):
         return Response(data)
 
 # API/JAILBANS
-class PieChartBans(APIView):
+
+class PieChartBans(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
 
@@ -139,7 +148,7 @@ class PieChartBans(APIView):
         return Response(data)
 
 
-class BarChartData(APIView):
+class BarChartData(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
 
@@ -172,7 +181,7 @@ class BarChartData(APIView):
         return Response(data)
 
 
-class PolarChartData(APIView):
+class PolarChartData(generics.ListAPIView):
     authentication_classes = []
     permission_classes = []
 
