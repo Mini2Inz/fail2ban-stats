@@ -104,6 +104,7 @@ class PieChartData(generics.ListAPIView):
     # locationTableData.save()
 
     def get(self, request, format=None):
+        timespan = self.kwargs['timespan']
         labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         default_items = []
