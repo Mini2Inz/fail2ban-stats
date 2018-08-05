@@ -92,7 +92,7 @@ class JSONView(JSONResponseMixin, TemplateView):
 
 # API/COUNTRY
 
-class PieChartData(generics.ListAPIView):
+class PieChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
@@ -103,7 +103,7 @@ class PieChartData(generics.ListAPIView):
     # locationTableData.dayOfTheWeek = 2
     # locationTableData.save()
 
-    def get(self, request, format=None):
+    def get(self, request, timespan,format=None):
         timespan = self.kwargs['timespan']
         labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
@@ -123,9 +123,10 @@ class PieChartData(generics.ListAPIView):
         }
         return Response(data)
 
+
 # API/JAILBANS
 
-class PieChartBans(generics.ListAPIView):
+class PieChartBans(APIView):
     authentication_classes = []
     permission_classes = []
 
@@ -149,11 +150,11 @@ class PieChartBans(generics.ListAPIView):
         return Response(data)
 
 
-class BarChartData(generics.ListAPIView):
+class BarChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request, format=None):
+    def get(self, request, timespan, format=None):
         labels = [list(calendar.day_name)[int(e[0])] for e in
                   LocationTableData.objects.order_by().values('dayOfTheWeek').distinct().values_list(
                       'dayOfTheWeek')]
@@ -182,11 +183,11 @@ class BarChartData(generics.ListAPIView):
         return Response(data)
 
 
-class PolarChartData(generics.ListAPIView):
+class PolarChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request, format=None):
+    def get(self, request, timespan,format=None):
         labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
         datasets = [{
             "label": 'Ukraina',
