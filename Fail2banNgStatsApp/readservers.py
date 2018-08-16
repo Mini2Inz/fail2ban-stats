@@ -28,10 +28,21 @@ from .statsutils import StatsReader
 
 # ServerListReader
 class ServerListReader(APIView):
-    def get(self, request, format=None):
+    def get(self, request, timespan, format=None):
+        timespan = self.kwargs['timespan']
         jsonOut = {
             "dataset": []
         }
+
+        if timespan == "day":
+            numberOfDays = 1
+
+        if timespan == "week":
+            numberOfDays = 7
+
+        if timespan == "month":
+            numberOfDays = 30
+
         config = read_config('stats.config')
         reader = StatsReader(config)
         hosts = reader.hosts

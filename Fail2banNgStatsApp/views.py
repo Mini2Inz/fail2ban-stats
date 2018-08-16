@@ -96,15 +96,22 @@ class PieChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    # locationTableData = LocationTableData()
-    # locationTableData.code = "POL"
-    # locationTableData.dateTime = "2018-08-01T20:00+00:00"
-    # locationTableData.banscount = 5
-    # locationTableData.dayOfTheWeek = 2
-    # locationTableData.save()
+    locationTableData = LocationTableData()
+    locationTableData.code = "UKR"
+    locationTableData.name = "Ukraina"
+    locationTableData.dateTime = "2018-08-09T20:00+00:00"
+    locationTableData.banscount = 6
+    locationTableData.dayOfTheWeek = 0
+    locationTableData.save()
 
     def get(self, request, timespan,format=None):
         timespan = self.kwargs['timespan']
+        if timespan == 'week':
+            intDays = 7
+        if timespan == 'day':
+            intDats = 1
+        if timespan == 'month':
+            intDays = 31
         labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         default_items = []
@@ -131,6 +138,13 @@ class PieChartBans(APIView):
     permission_classes = []
 
     def get(self, request, format=None):
+        timespan = self.kwargs['timespan']
+        if timespan == 'week':
+            intDays = 7
+        if timespan == 'day':
+            intDats = 1
+        if timespan == 'month':
+            intDays = 31
         # labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
         labels = [e['jail'] for e in BansTableData.objects.order_by().values('jail').distinct()]
         print(labels)
