@@ -43,13 +43,15 @@ class ServerListReader(APIView):
         if timespan == "month":
             numberOfDays = 30
 
+        time_threshold = datetime.now() - timedelta(days=numberOfDays)
+
         config = read_config('stats.config')
         reader = StatsReader(config)
         hosts = reader.hosts
         for host in hosts:
             host["bans"] = BansTableData.objects.filter(recived_from_address=host['host'],
                                                         recived_from_port=host['port']).filter(
-                datetime.now() - timedelta(days=numberOfDays)).count()
+                bantime__lt=time_threshold).count()
             jsonOut["dataset"].append(host)
 
         jsonOut["dataset"] = sorted(jsonOut["dataset"], key=lambda k: k['bans'], reverse=True)

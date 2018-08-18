@@ -104,19 +104,24 @@ class PieChartData(APIView):
     locationTableData.dayOfTheWeek = 0
     locationTableData.save()
 
-    def get(self, request, timespan,format=None):
+    def get(self, request, timespan, format=None):
         timespan = self.kwargs['timespan']
         if timespan == 'week':
             intDays = 7
         if timespan == 'day':
-            intDats = 1
+            intDays = 1
         if timespan == 'month':
-            intDays = 31
-        labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
-        countries = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
+            intDays = 30
+
+        time_threshold = datetime.now() - timedelta(days=intDays)
+
+        labels = [e for e in LocationTableData.objects.filter(dateTime__lt=time_threshold).order_by().values(
+            'name').distinct().values_list('name')]
         default_items = []
-        for c in countries:
-            bans_by_country_sum = LocationTableData.objects.filter(name=c[0]).aggregate(Sum('banscount'))[
+        for c in labels:
+            bans_by_country_sum = \
+            LocationTableData.objects.filter(name=c[0]).filter(dateTime__lt=time_threshold).aggregate(
+                Sum('banscount'))[
                 'banscount__sum']
             default_items.extend([bans_by_country_sum])
         # for c in countries:
@@ -140,15 +145,17 @@ class PieChartBans(APIView):
         if timespan == 'week':
             intDays = 7
         if timespan == 'day':
-            intDats = 1
+            intDays = 1
         if timespan == 'month':
-            intDays = 31
+            intDays = 30
+
+        time_threshold = datetime.now() - timedelta(days=intDays)
         # labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
-        labels = [e['jail'] for e in BansTableData.objects.order_by().values('jail').distinct()]
+        labels = [e['jail'] for e in BansTableData.objects.order_by().filter(bantime__lt=time_threshold).values('jail').distinct()]
         print(labels)
         default_items = []
         for l in labels:
-            jails_count = [BansTableData.objects.filter(jail=l).count()]
+            jails_count = [BansTableData.objects.filter(bantime__lt=time_threshold).filter(jail=l).count()]
             default_items.extend([jails_count])
         # for c in countries:
         #     r = lambda: randint(0, 255)
@@ -196,7 +203,7 @@ class PolarChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request, timespan,format=None):
+    def get(self, request, timespan, format=None):
         labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
         datasets = [{
             "label": 'Ukraina',
