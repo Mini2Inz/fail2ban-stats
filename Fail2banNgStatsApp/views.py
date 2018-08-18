@@ -4,7 +4,7 @@ import csv
 from random import randint
 import calendar
 import locale
-import datetime
+from datetime import datetime
 from django.shortcuts import render
 from django.http import JsonResponse
 from flask import Flask
@@ -176,7 +176,7 @@ class BarChartData(APIView):
                   LocationTableData.objects.order_by().values('dayOfTheWeek').distinct().values_list(
                       'dayOfTheWeek')]
         data = []
-        i = datetime.datetime.weekday(
+        i = datetime.weekday(
             LocationTableData.objects.order_by('dateTime').aggregate(Min('dateTime'))['dateTime__min'])
         print(i)
         for wd in labels:
@@ -277,9 +277,9 @@ def old_refresh_location(request):
                     locationData = LocationTableData()
                     locationData.code = code
                     locationData.name = name
-                    locationData.dateTime = datetime.datetime.now()
-                    locationData.dayOfTheWeek = datetime.datetime.now().weekday()
-                    print(datetime.datetime.now())
+                    locationData.dateTime = datetime.now()
+                    locationData.dayOfTheWeek = datetime.now().weekday()
+                    print(datetime.now())
 
                     try:
                         int(banscount)
