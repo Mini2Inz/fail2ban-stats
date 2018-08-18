@@ -47,6 +47,7 @@ class StatsDatabase():
                 ban.bantime = int_try_parse(ban_data[3])
             ban.recived_from_address = host['host']
             ban.recived_from_port = host['port']
+            ban.timeOfArrival = datetime.now()
             ban.save()
 
         self.__save(bans, saveBan)

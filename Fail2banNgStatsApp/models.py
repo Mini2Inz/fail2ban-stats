@@ -16,9 +16,10 @@ class BansTableData(models.Model):
     jail = models.CharField(max_length=50)
     ip = models.CharField(max_length=50)
     timeofban = models.IntegerField()
-    bantime = models.DateTimeField(default=timezone.now, blank=True)
+    bantime = models.IntegerField()
     recived_from_address = models.CharField(max_length=50, default='UNKNOWN')
     recived_from_port = models.CharField(max_length=50, default='UNKNOWN')
+    timeOfArrival = models.DateTimeField(default=timezone.now, blank=True)
 
     class Meta:
         db_table = "banstabledata"

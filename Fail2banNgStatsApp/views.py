@@ -151,11 +151,11 @@ class PieChartBans(APIView):
 
         time_threshold = datetime.now() - timedelta(days=intDays)
         # labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
-        labels = [e['jail'] for e in BansTableData.objects.order_by().filter(bantime__lt=time_threshold).values('jail').distinct()]
+        labels = [e['jail'] for e in BansTableData.objects.order_by().filter(timeOfArrival__lt=time_threshold).values('jail').distinct()]
         print(labels)
         default_items = []
         for l in labels:
-            jails_count = [BansTableData.objects.filter(bantime__lt=time_threshold).filter(jail=l).count()]
+            jails_count = [BansTableData.objects.filter(timeOfArrival__lt=time_threshold).filter(jail=l).count()]
             default_items.extend([jails_count])
         # for c in countries:
         #     r = lambda: randint(0, 255)
