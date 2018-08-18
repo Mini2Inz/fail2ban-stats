@@ -119,14 +119,12 @@ class PieChartData(APIView):
             bans_by_country_sum = LocationTableData.objects.filter(name=c[0]).aggregate(Sum('banscount'))[
                 'banscount__sum']
             default_items.extend([bans_by_country_sum])
-        background_colors = ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#2a5a63", "#e00813"]
         # for c in countries:
         #     r = lambda: randint(0, 255)
         #     background_colors.extend(['#%02X%02X%02X' % (r(), r(), r())])
         data = {
             "labels": labels,
             "default": default_items,
-            "colors": background_colors,
         }
         return Response(data)
 
@@ -152,14 +150,12 @@ class PieChartBans(APIView):
         for l in labels:
             jails_count = [BansTableData.objects.filter(jail=l).count()]
             default_items.extend([jails_count])
-        background_colors = ["#2a5a63", "#e00813", "#c45850", "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9"]
         # for c in countries:
         #     r = lambda: randint(0, 255)
         #     background_colors.extend(['#%02X%02X%02X' % (r(), r(), r())])
         data = {
             "labels": labels,
             "default": default_items,
-            "colors": background_colors,
         }
         return Response(data)
 
@@ -187,7 +183,6 @@ class BarChartData(APIView):
             print(perday)
         datasets = [{
             "label": "Number of bans per week day",
-            "backgroundColor": ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#2a5a63", "#e00813"],
             "data": data
         }]
         data = {
@@ -205,17 +200,14 @@ class PolarChartData(APIView):
         labels = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
         datasets = [{
             "label": 'Ukraina',
-            "backgroundColor": "rgba(153,255,51,0.4)",
             "borderColor": "rgba(153,255,51,1)",
             "data": [3, 7, 8, 9, 4],
         }, {
             "label": 'Chiny',
-            "backgroundColor": "rgba(255,47,30,0.4)",
             "borderColor": "rgba(255,153,0,1)",
             "data": [12, 14, 11, 11, 10]
         }, {
             "label": 'Korea Południowa',
-            "backgroundColor": "rgba(100,30,250,0.4)",
             "borderColor": "rgba(50,30,250,1)",
             "data": [9, 11, 7, 8, 6]
         }]
