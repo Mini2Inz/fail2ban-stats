@@ -4,7 +4,7 @@ import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from Fail2banNgStatsApp.models import BansTableData
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .statsreader import read_config
 from .statsutils import StatsReader

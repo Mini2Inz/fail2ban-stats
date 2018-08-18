@@ -4,7 +4,7 @@ import csv
 from random import randint
 import calendar
 import locale
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http import JsonResponse
 from flask import Flask
@@ -140,7 +140,7 @@ class PieChartBans(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request, format=None):
+    def get(self, request, timespan,format=None):
         timespan = self.kwargs['timespan']
         if timespan == 'week':
             intDays = 7
