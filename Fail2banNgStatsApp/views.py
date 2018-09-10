@@ -96,13 +96,13 @@ class PieChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    locationTableData = LocationTableData()
-    locationTableData.code = "UKR"
-    locationTableData.name = "Ukraina"
-    locationTableData.dateTime = "2018-08-09T20:00+00:00"
-    locationTableData.banscount = 6
-    locationTableData.dayOfTheWeek = 0
-    locationTableData.save()
+    # locationTableData = LocationTableData()
+    # locationTableData.code = "TD"
+    # locationTableData.name = "Chad"
+    # locationTableData.dateTime = "2018-09-10T22:00+00:00"
+    # locationTableData.banscount = 6
+    # locationTableData.dayOfTheWeek = 2
+    # locationTableData.save()
 
     def get(self, request, timespan, format=None):
         timespan = self.kwargs['timespan']
@@ -139,6 +139,13 @@ class PieChartData(APIView):
 class PieChartBans(APIView):
     authentication_classes = []
     permission_classes = []
+
+
+    btd = BansTableData()
+    btd.jail = "SSH"
+    btd.ip = "190.145.16.7"
+    btd.recived_from_port = "127.0.0.1"
+    btd.recived_from_port = "8500"
 
     def get(self, request, timespan,format=None):
         timespan = self.kwargs['timespan']
