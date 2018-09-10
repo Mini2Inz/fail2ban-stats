@@ -104,7 +104,7 @@ class PieChartData(APIView):
     # ltd.banscount = 55
     # ltd.save()
 
-    print(ltd.dateTime)
+    # print(ltd.dateTime)
 
     def get(self, request, timespan, format=None):
         timespan = self.kwargs['timespan']
@@ -116,13 +116,13 @@ class PieChartData(APIView):
             intDays = 30
 
         time_threshold = datetime.now() - timedelta(days=intDays)
-        print("TIME_THRESHOLD")
-        print(time_threshold)
+        # print("TIME_THRESHOLD")
+        # print(time_threshold)
 
         labels = [e for e in LocationTableData.objects.filter(dateTime__gt=time_threshold).order_by().values(
             'code').distinct().values_list('code')]
-        print("LABELS")
-        print(labels[0])
+        # print("LABELS")
+        # print(labels[0])
         default_items = []
         for c in labels:
             bans_by_country_sum = \
