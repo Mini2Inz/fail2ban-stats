@@ -52,7 +52,7 @@ class ServerListReader(APIView):
         for host in hosts:
             host["bans"] = BansTableData.objects.filter(recived_from_address=host['host'],
                                                         recived_from_port=host['port']).filter(
-                timeOfArrival__lt=time_threshold).count()
+                timeOfArrival__gt=time_threshold).count()
             jsonOut["dataset"].append(host)
 
         jsonOut["dataset"] = sorted(jsonOut["dataset"], key=lambda k: k['bans'], reverse=True)
