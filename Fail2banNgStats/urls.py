@@ -15,8 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from Fail2banNgStatsApp.views import PieChartData, PolarChartData, refresh, control, refresh_location, BarChartData, \
-    PieChartBans
+from Fail2banNgStatsApp.views import PieChartData, PolarChartData, refresh, control, refresh_location, PieChartBans
 from Fail2banNgStatsApp.readservers import ServerListReader
 from Fail2banNgStatsApp.bansfromdb import BansListReader
 from Fail2banNgStatsApp.locationsfromdb import LocationListReader
@@ -26,7 +25,8 @@ urlpatterns = [
     url(r'^', include('Fail2banNgStatsApp.urls')),
     url(r'^api/country/(?P<timespan>.+)/$', PieChartData.as_view()),
     url(r'^api/chart/data/polar$', PolarChartData.as_view()),
-    url(r'^api/chart/data/bar$', BarChartData.as_view()),
+    # url(r'^refresh_location$', views.refresh_location, name='refresh_location'),
+    # url(r'^api/chart/data/bar$', BarChartData.as_view()),
     url(r'^api/servers/(?P<timespan>.+)/$', ServerListReader.as_view()),
     url(r'^api/jailsbans/(?P<timespan>.+)/$', PieChartBans.as_view()),
     url(r'^control$', control, name='index'),

@@ -126,9 +126,9 @@ class PieChartData(APIView):
         default_items = []
         for c in labels:
             bans_by_country_sum = \
-            LocationTableData.objects.filter(code=c[0]).filter(dateTime__lte=time_threshold).aggregate(
-                Sum('banscount'))[
-                'banscount__sum']
+                LocationTableData.objects.filter(code=c[0]).filter(dateTime__lte=time_threshold).aggregate(
+                    Sum('banscount'))[
+                    'banscount__sum']
             default_items.extend([bans_by_country_sum])
         # for c in countries:
         #     r = lambda: randint(0, 255)
@@ -146,13 +146,14 @@ class PieChartBans(APIView):
     authentication_classes = []
     permission_classes = []
 
+    # Dodawanie rekordów z "palca"
     # btd = BansTableData()
     # btd.timeofban = 1500000
     # btd.bantime = 15
     # btd.jail = "IMAP"
     # btd.save()
 
-    def get(self, request, timespan,format=None):
+    def get(self, request, timespan, format=None):
         timespan = self.kwargs['timespan']
         if timespan == 'week':
             intDays = 7
@@ -162,16 +163,13 @@ class PieChartBans(APIView):
             intDays = 30
 
         time_threshold = datetime.now() - timedelta(days=intDays)
-        # labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
-        labels = [e['jail'] for e in BansTableData.objects.order_by().filter(timeOfArrival__lte=time_threshold).values('jail').distinct()]
+        labels = [e['jail'] for e in
+                  BansTableData.objects.order_by().filter(timeOfArrival__lte=time_threshold).values('jail').distinct()]
         print(labels)
         default_items = []
         for l in labels:
             jails_count = [BansTableData.objects.filter(timeOfArrival__lte=time_threshold).filter(jail=l).count()]
             default_items.extend([jails_count])
-        # for c in countries:
-        #     r = lambda: randint(0, 255)
-        #     background_colors.extend(['#%02X%02X%02X' % (r(), r(), r())])
         data = {
             "labels": labels,
             "default": default_items,
@@ -183,19 +181,7 @@ class WeeklyPrisonData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request,format=None):
-        time_threshold = datetime.now() - timedelta(days=7)
-        for wd in FromLastWeek:
-          weekday = datetime.fromtimestamp(ep / 1000).strftime("%A")
-
-        return Response(data)
-
-
-class BarChartData(APIView):
-    authentication_classes = []
-    permission_classes = []
-
-    def get(self, request, timespan, format=None):
+    def get(self, request, format=None):
         labels = [list(calendar.day_name)[int(e[0])] for e in
                   LocationTableData.objects.order_by().values('dayOfTheWeek').distinct().values_list(
                       'dayOfTheWeek')]

@@ -2,7 +2,7 @@ from django.conf.urls import url
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
-from .views import PieChartData, PolarChartData, on_startup, BarChartData, PieChartBans
+from .views import PieChartData, PolarChartData, on_startup, PieChartBans, WeeklyPrisonData
 from .readservers import ServerListReader
 from .bansfromdb import BansListReader
 from .locationsfromdb import LocationListReader
@@ -15,9 +15,10 @@ urlpatterns = urlpatterns = [
                   url(r'^control$', views.control, name='index'),
                   url(r'^api/country/(?P<timespan>.+)/$', PieChartData.as_view()),
                   url(r'^api/chart/data/polar$', PolarChartData.as_view()),
-                  url(r'^api/chart/data/bar$', BarChartData.as_view()),
+                  # url(r'^api/chart/data/bar$', BarChartData.as_view()),
                   url(r'^api/servers/(?P<timespan>.+)/$', ServerListReader.as_view()),
                   url(r'^api/jailsbans/(?P<timespan>.+)/$', PieChartBans.as_view()),
+                  url(r'^api/weeklybans/$', WeeklyPrisonData.as_view()),
                   url(r'^refresh$', views.refresh, name='refresh'),
                   url(r'^api/chart/data/serverList$', ServerListReader.as_view()),
                   url(r'^api/chart/data/bans$', BansListReader.as_view()),
