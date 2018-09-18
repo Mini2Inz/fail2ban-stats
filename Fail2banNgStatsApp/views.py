@@ -119,14 +119,14 @@ class PieChartData(APIView):
         # print("TIME_THRESHOLD")
         # print(time_threshold)
 
-        labels = [e for e in LocationTableData.objects.filter(dateTime__gt=time_threshold).order_by().values(
+        labels = [e for e in LocationTableData.objects.filter(dateTime__lte=time_threshold).order_by().values(
             'code').distinct().values_list('code')]
         # print("LABELS")
         # print(labels[0])
         default_items = []
         for c in labels:
             bans_by_country_sum = \
-            LocationTableData.objects.filter(code=c[0]).filter(dateTime__gt=time_threshold).aggregate(
+            LocationTableData.objects.filter(code=c[0]).filter(dateTime__lte=time_threshold).aggregate(
                 Sum('banscount'))[
                 'banscount__sum']
             default_items.extend([bans_by_country_sum])
@@ -140,11 +140,17 @@ class PieChartData(APIView):
         return Response(data)
 
 
-# API/JAILBANS
+# API/JAILSBANS
 
 class PieChartBans(APIView):
     authentication_classes = []
     permission_classes = []
+
+    # btd = BansTableData()
+    # btd.timeofban = 1500000
+    # btd.bantime = 15
+    # btd.jail = "IMAP"
+    # btd.save()
 
     def get(self, request, timespan,format=None):
         timespan = self.kwargs['timespan']
@@ -157,11 +163,11 @@ class PieChartBans(APIView):
 
         time_threshold = datetime.now() - timedelta(days=intDays)
         # labels = [e for e in LocationTableData.objects.order_by().values('name').distinct().values_list('name')]
-        labels = [e['jail'] for e in BansTableData.objects.order_by().filter(timeOfArrival__gt=time_threshold).values('jail').distinct()]
+        labels = [e['jail'] for e in BansTableData.objects.order_by().filter(timeOfArrival__lte=time_threshold).values('jail').distinct()]
         print(labels)
         default_items = []
         for l in labels:
-            jails_count = [BansTableData.objects.filter(timeOfArrival__gt=time_threshold).filter(jail=l).count()]
+            jails_count = [BansTableData.objects.filter(timeOfArrival__lte=time_threshold).filter(jail=l).count()]
             default_items.extend([jails_count])
         # for c in countries:
         #     r = lambda: randint(0, 255)
@@ -170,6 +176,18 @@ class PieChartBans(APIView):
             "labels": labels,
             "default": default_items,
         }
+        return Response(data)
+
+
+class WeeklyPrisonData(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request,format=None):
+        time_threshold = datetime.now() - timedelta(days=7)
+        for wd in FromLastWeek:
+          weekday = datetime.fromtimestamp(ep / 1000).strftime("%A")
+
         return Response(data)
 
 
