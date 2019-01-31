@@ -119,14 +119,14 @@ class PieChartData(APIView):
         # print("TIME_THRESHOLD")
         # print(time_threshold)
 
-        labels = [e for e in LocationTableData.objects.filter(dateTime__lte=time_threshold).order_by().values(
+        labels = [e for e in LocationTableData.objects.order_by().values(
             'code').distinct().values_list('code')]
         # print("LABELS")
         # print(labels[0])
         default_items = []
         for c in labels:
             bans_by_country_sum = \
-                LocationTableData.objects.filter(code=c[0]).filter(dateTime__lte=time_threshold).aggregate(
+                LocationTableData.objects.filter(code=c[0]).aggregate(
                     Sum('banscount'))[
                     'banscount__sum']
             default_items.extend([bans_by_country_sum])
@@ -164,11 +164,11 @@ class PieChartBans(APIView):
 
         time_threshold = datetime.now() - timedelta(days=intDays)
         labels = [e['jail'] for e in
-                  BansTableData.objects.order_by().filter(timeOfArrival__lte=time_threshold).values('jail').distinct()]
+                  BansTableData.objects.order_by().values('jail').distinct()]
         print(labels)
         default_items = []
         for l in labels:
-            jails_count = [BansTableData.objects.filter(timeOfArrival__lte=time_threshold).filter(jail=l).count()]
+            jails_count = [BansTableData.objects.filter(jail=l).count()]
             default_items.extend([jails_count])
         data = {
             "labels": labels,
